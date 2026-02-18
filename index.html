@@ -3,245 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Illusive Studio v2.2.2 | Base Stable</title>
+    <title>Illusive Studio v2.4.7 | Master Stable</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --gold: #d4af37; --bg: #050505; --glass: rgba(255, 255, 255, 0.05); --border: rgba(212, 175, 55, 0.3); --font-modegi: 'Cormorant Garamond', serif; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); z-index: 100; padding: 20px; }
+        
+        /* HARD VERTICAL LOCK */
+        html, body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden; font-size: 18px; position: fixed; }
+        
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: flex-start; background: var(--bg); z-index: 100; padding: 20px; padding-top: 80px; }
         .active-screen { display: flex !important; }
-        .logo-text { font-family: var(--font-modegi); text-transform: uppercase; letter-spacing: 6px; font-weight: 700; font-style: italic; color: var(--gold); border-bottom: 1px solid var(--gold); padding-bottom: 5px; cursor: pointer; text-decoration: none; }
-        .banner { background: var(--gold); color: #000; font-weight: 800; font-size: 10px; padding: 12px; position: fixed; top: 0; width: 100%; letter-spacing: 2px; text-align: center; z-index: 2000000; }
-        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); z-index: 2000000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
-        .glass-card { background: var(--glass); backdrop-filter: blur(40px); border: 1px solid var(--border); border-radius: 40px; padding: 35px 25px; width: 100%; max-width: 400px; text-align: center; }
-        nav#top-nav { position: fixed; top: 40px; width: 100%; padding: 0 30px; display: none; justify-content: space-between; align-items: center; z-index: 500000; }
-        .nav-profile { width: 50px; height: 50px; border: 1.5px solid var(--gold); border-radius: 50%; overflow: hidden; background: #111; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .scroller { display: flex; overflow-x: auto; gap: 12px; padding: 15px 5px; width: 100%; scrollbar-width: none; }
-        .tile { min-width: 95px; padding: 20px 10px; border: 1px solid var(--border); border-radius: 20px; background: rgba(0,0,0,0.4); cursor: pointer; flex-shrink: 0; position: relative; font-size: 11px; }
-        .tile.selected { background: var(--gold); color: #000; font-weight: 800; border-color: #fff; }
+
+        /* THE MASTER HEADER (BOOKING ONLY) */
+        .header-ribbon { position: fixed; top: 0; width: 100%; height: 85px; background: var(--gold); display: none; justify-content: space-between; align-items: center; padding: 0 25px; z-index: 500000; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .brand-main { font-family: var(--font-modegi); font-weight: 900; font-size: 24px; color: #000; letter-spacing: -1px; line-height: 1; }
+        .brand-sub { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 20px; color: #000; line-height: 1; }
+
+        .avatar-frame { width: 55px; height: 55px; border: 2px solid #000; border-radius: 50%; overflow: hidden; background: #111; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; cursor: pointer; }
+        .avatar-frame img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+        .glass-card { background: var(--glass); backdrop-filter: blur(40px); border: 1px solid var(--border); border-radius: 40px; padding: 30px 25px; width: 100%; max-width: 420px; text-align: center; display: flex; flex-direction: column; max-height: 75vh; }
+        
+        /* MEGA PROMO DESIGN */
+        .mega-promo { background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.05)); border: 2px solid var(--gold); padding: 30px 20px; border-radius: 30px; margin-bottom: 25px; animation: pulse-glow 3s infinite ease-in-out; }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.2); } 50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); } }
+        
+        .scroller { display: flex; overflow-x: auto; gap: 15px; padding: 10px 5px; width: 100%; scrollbar-width: none; flex-shrink: 0; }
+        .tile { min-width: 105px; padding: 22px 10px; border: 1.5px solid var(--border); border-radius: 20px; background: rgba(0,0,0,0.5); cursor: pointer; flex-shrink: 0; position: relative; font-size: 14px; font-weight: 800; }
+        .tile.selected { background: var(--gold); color: #000; border-color: #fff; }
         .tile.locked { opacity: 0.3; pointer-events: none; color: #ff4444; border-color: #ff4444; }
-        .voucher-item { background: rgba(212, 175, 55, 0.08); border: 1px solid var(--gold); border-radius: 15px; margin: 10px 0; overflow: hidden; transition: 0.3s; cursor: pointer; text-align: left; }
-        .voucher-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .voucher-details { max-height: 0; padding: 0 15px; transition: 0.3s; opacity: 0; font-size: 10px; color: #aaa; border-top: 1px solid rgba(212,175,55,0.2); overflow: hidden; }
-        .voucher-item.expanded .voucher-details { max-height: 120px; padding: 15px; opacity: 1; }
-        .primary-btn { background: var(--gold); color: #000; border: none; padding: 22px; width: 100%; border-radius: 24px; font-weight: 800; text-transform: uppercase; margin-top: 15px; letter-spacing: 2px; cursor: pointer; }
-        input { width: 100%; padding: 20px; background: rgba(0,0,0,0.8); border: 1px solid var(--border); border-radius: 20px; color: white; text-align: center; margin-bottom: 15px; }
+
+        .internal-scroll { flex-grow: 1; overflow-y: auto; scrollbar-width: none; margin: 15px 0; }
+        .primary-btn { background: var(--gold); color: #000; border: none; padding: 25px; width: 100%; border-radius: 30px; font-weight: 800; text-transform: uppercase; margin-top: 15px; letter-spacing: 2px; cursor: pointer; font-size: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        input { width: 100%; padding: 22px; background: rgba(0,0,0,0.8); border: 2px solid var(--border); border-radius: 25px; color: white; text-align: center; margin-bottom: 20px; font-size: 18px; flex-shrink: 0; }
     </style>
 </head>
 <body>
 
-    <div class="banner">₱500 OFF YOUR FIRST APP BOOKING • v2.2.2 BASE STABLE</div>
-
-    <div id="pop-sync" class="popup-overlay"><div class="glass-card"><div style="border:3px solid var(--gold); border-top-color:transparent; width:40px; height:40px; border-radius:50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px;"></div><p id="sync-text" style="font-size: 10px; color: var(--gold); letter-spacing: 3px;">SYNCING...</p></div></div>
-    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-
-    <div id="pop-thanks" class="popup-overlay">
-        <div class="glass-card">
-            <h2 class="logo-text" style="font-size: 1.5rem; border:none; color:var(--gold); margin-bottom: 10px;">SUCCESS</h2>
-            <p style="font-size: 10px; letter-spacing: 2px; line-height:1.6; margin-bottom: 25px;">SESSION SECURED!<br><span id="reward-earned-text" style="color:var(--gold); font-weight:800;"></span><br>THANK YOU FOR BOOKING.</p>
-            <button class="primary-btn" onclick="document.getElementById('pop-thanks').style.display='none'; transition('scr-booking', 'scr-profile'); fetchAll();">CONTINUE</button>
+    <div id="booking-header" class="header-ribbon">
+        <div class="brand-block" onclick="document.getElementById('pop-bio').style.display='flex'">
+            <div class="brand-main">ILLUSIVE</div>
+            <div class="brand-sub">STUDIO</div>
         </div>
+        <div class="avatar-frame" onclick="toProfile()"><img id="nav-img" style="display:none;"><span id="nav-init" style="font-weight: 800; color:#000;">U</span></div>
     </div>
+
+    <div id="pop-sync" class="popup-overlay"><div class="glass-card"><div style="border:5px solid var(--gold); border-top-color:transparent; width:60px; height:60px; border-radius:50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px;"></div><p id="sync-text" style="font-size: 14px; color: var(--gold); letter-spacing: 4px; font-weight: 800;">VERIFYING SLOT...</p></div></div>
 
     <div id="pop-bio" class="popup-overlay" onclick="this.style.display='none'">
         <div class="glass-card" onclick="event.stopPropagation()">
-            <h2 id="admin-name-pop" class="logo-text" style="color:var(--gold); border:none; margin-bottom:20px;">IAN LESTER</h2>
-            <div id="admin-titles" style="font-size: 10px; letter-spacing: 2px; color: #aaa; margin: 8px 0;">
-                <div>Tattoo Artist</div><div>Photographer</div><div>Social Media Manager</div>
+            <div class="avatar-frame" style="width:130px; height:130px; margin: 0 auto 20px; border-color:var(--gold);">
+                <img id="admin-photo" style="display:none;"><span style="color:var(--gold); font-size: 2.5rem;">IL</span>
             </div>
-            <div style="display:flex; justify-content:center; gap:25px; margin-top:25px;">
-                <a href="https://www.facebook.com/share/1CUUe8eweg/" target="_blank" style="color:var(--gold); font-size:22px;"><i class="fab fa-facebook"></i></a>
-                <a href="mailto:yhanlhester@gmail.com" style="color:var(--gold); font-size:22px;"><i class="fas fa-envelope"></i></a>
+            <h2 class="brand-main" style="color:var(--gold); border:none; margin-bottom:10px; font-size:38px;">IAN LESTER</h2>
+            <div style="font-size: 15px; color: #fff; font-weight: 600; margin-bottom: 5px;">Tattoo Artist • Photographer</div>
+            <div style="font-size: 15px; color: #aaa; margin-bottom: 30px;">Social Media Manager • Astronaut</div>
+            <div style="display:flex; justify-content:center; gap:40px;">
+                <a href="https://www.facebook.com/share/1CUUe8eweg/" target="_blank" style="color:var(--gold); font-size:35px;"><i class="fab fa-facebook"></i></a>
+                <a href="mailto:yhanlhester@gmail.com" style="color:var(--gold); font-size:35px;"><i class="fas fa-envelope"></i></a>
             </div>
         </div>
     </div>
 
-    <nav id="top-nav">
-        <div class="logo-text studio-name-display" onclick="document.getElementById('pop-bio').style.display='flex'" style="font-size: 0.75rem;">ILLUSIVE STUDIO</div>
-        <div class="nav-profile" onclick="toProfile()"><img id="nav-img" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="nav-init">U</span></div>
-    </nav>
+    <section id="scr-landing" class="screen active-screen" style="padding-top: 50px;">
+        <h1 class="brand-main" style="font-size: 6.5rem; color:var(--gold); margin-bottom: 5px; line-height: 0.8;">ILLUSIVE</h1>
+        <div style="font-size: 14px; letter-spacing: 6px; color: #eee; font-weight: 300; margin-bottom: 45px; text-transform: uppercase;">Premium Online Booking</div>
 
-    <div id="crop-overlay" class="popup-overlay">
         <div class="glass-card">
-            <p style="font-size: 8px; color: var(--gold); letter-spacing: 2px; margin-bottom: 20px;">CENTER PROFILE PHOTO</p>
-            <div style="width: 250px; height: 250px; border: 2px solid var(--gold); border-radius: 50%; overflow: hidden; position: relative; margin: 0 auto; background: #111;">
-                <img id="crop-img" style="position:absolute; transform-origin:center; top:50%; left:50%; transform: translate(-50%, -50%);">
+            <div class="mega-promo">
+                <div style="font-size: 14px; font-weight: 800; letter-spacing: 2px; color: var(--gold); margin-bottom: 12px;">✨ 1ST APP BOOKING SPECIAL ✨</div>
+                <div style="font-size: 38px; font-weight: 900; color: #fff;">₱500 OFF</div>
+                <div style="font-size: 11px; font-weight: 600; color: #aaa; margin-top: 12px; letter-spacing: 1px;">REFER FRIENDS: ₱100-₱500 DISCOUNTS</div>
             </div>
-            <div style="display:grid; grid-template-columns: repeat(3, 45px); gap: 10px; margin-top: 25px; justify-content: center;">
-                <div></div><button class="primary-btn" onclick="moveImg(0,-10)" style="padding:10px;"><i class="fas fa-arrow-up"></i></button><div></div>
-                <button class="primary-btn" onclick="moveImg(-10,0)" style="padding:10px;"><i class="fas fa-arrow-left"></i></button>
-                <button class="primary-btn" onclick="moveImg(0,0)" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:10px;"><i class="fas fa-sync"></i></button>
-                <button class="primary-btn" onclick="moveImg(10,0)" style="padding:10px;"><i class="fas fa-arrow-right"></i></button>
-                <div></div><button class="primary-btn" onclick="moveImg(0,10)" style="padding:10px;"><i class="fas fa-arrow-down"></i></button><div></div>
-            </div>
-            <input type="range" id="zoom-slider" min="1" max="3" step="0.1" value="1" style="width: 200px; margin-top: 15px; accent-color: var(--gold);">
-            <button class="primary-btn" onclick="saveCrop()">CONFIRM PHOTO</button>
-        </div>
-    </div>
-
-    <section id="scr-landing" class="screen active-screen">
-        <h1 class="logo-text landing-logo" style="font-size: 3rem; border:none; margin-bottom: 30px;">ILLUSIVE</h1>
-        <div class="glass-card">
-            <div id="vault-area" style="display:none; margin-bottom: 20px;">
-                <p style="font-size: 8px; color: var(--gold); letter-spacing: 2px;">RECENT SESSIONS</p>
-                <div class="scroller" id="vault-list" style="justify-content:center;"></div>
-            </div>
+            
+            <div id="vault-area" style="display:none; width: 100%;"><div class="scroller" id="vault-list" style="justify-content:center; margin-bottom: 20px;"></div></div>
             <input type="text" id="in-name" placeholder="FULL NAME">
-            <input type="text" id="in-ref-code" placeholder="REFERRAL CODE (OPTIONAL)" style="border-style:dashed; opacity:0.7; font-size:12px;">
+            <input type="text" id="in-ref-code" placeholder="REFERRAL CODE (OPTIONAL)">
             <button onclick="login()" class="primary-btn">ACCESS STUDIO</button>
         </div>
     </section>
 
     <section id="scr-booking" class="screen">
         <div class="glass-card">
-            <p style="font-size: 8px; color: var(--gold); letter-spacing: 3px;">I. STYLE</p>
+            <p style="font-size: 11px; color: var(--gold); letter-spacing: 3px; font-weight: 800;">I. STYLE</p>
             <div class="scroller" style="justify-content:center;"><div class="tile s-tile" onclick="setStyles(this, 'Minimalist')">MINIMAL</div><div class="tile s-tile" onclick="setStyles(this, 'Complex')">COMPLEX</div></div>
-            <p style="font-size: 8px; color: var(--gold); letter-spacing: 3px; margin-top:20px;">II. DATE</p><div class="scroller" id="date-scroller"></div>
-            <p style="font-size: 8px; color: var(--gold); letter-spacing: 3px; margin-top:20px;">III. TIME</p>
+            <p style="font-size: 11px; color: var(--gold); letter-spacing: 3px; margin-top: 15px; font-weight: 800;">II. DATE</p><div class="scroller" id="date-scroller"></div>
+            <p style="font-size: 11px; color: var(--gold); letter-spacing: 3px; margin-top: 15px; font-weight: 800;">III. TIME</p>
             <div class="scroller" style="justify-content:center;"><div class="tile t-tile" onclick="setTimes(this, '10:00 AM')">10 AM</div><div class="tile t-tile" onclick="setTimes(this, '01:00 PM')">01 PM</div></div>
-            <button onclick="book()" class="primary-btn">SECURE SLOT</button>
+            <button id="book-btn" onclick="book()" class="primary-btn"><span id="btn-text">SECURE SESSION</span><i id="btn-check" class="fas fa-check-circle" style="display:none;"></i></button>
         </div>
     </section>
 
-    <section id="scr-profile" class="screen">
+    <section id="scr-profile" class="screen" style="padding-top: 30px; justify-content: center;">
         <div class="glass-card">
-            <div class="nav-profile" style="width:110px; height:110px; margin: 0 auto 20px;" onclick="document.getElementById('file-in').click()">
-                <img id="p-img" style="width:100%; height:100%; object-fit:cover; display:none;"><span>U</span>
+            <div style="flex-shrink:0;">
+                <div class="avatar-frame" style="width:115px; height:115px; margin: 0 auto 15px; border-color:var(--gold);" onclick="document.getElementById('file-in').click()"><img id="p-img" style="display:none;"><span style="font-size: 2.2rem; font-weight: 900; color:var(--gold);">U</span></div>
+                <input type="file" id="file-in" hidden accept="image/*" onchange="initCrop(this)">
+                <h2 id="p-name" class="brand-main" style="margin-bottom:5px; font-size: 2rem; color:var(--gold);">USER</h2>
+                <p id="p-ref-code" onclick="copyRef()" style="letter-spacing: 5px; font-weight: 800; color: var(--gold); font-size: 20px; cursor:pointer; margin-bottom: 15px;">ILL-XXXX</p>
             </div>
-            <input type="file" id="file-in" hidden accept="image/*" onchange="initCrop(this)">
-            <h2 id="p-name" class="logo-text" style="border:none; margin-bottom:5px;">USER</h2>
-            <p id="p-ref-code" onclick="copyRef()" style="letter-spacing: 4px; font-weight: 800; color: var(--gold); font-size: 14px; cursor:pointer; margin-bottom: 10px;">ILL-XXXX</p>
-            <p style="font-size: 8px; color: var(--gold); letter-spacing: 2px; margin-top: 10px;">EARNED VOUCHERS</p>
-            <div id="voucher-vault" style="max-height: 180px; overflow-y: auto; margin-bottom:15px;"></div>
-            <button onclick="transition('scr-profile', 'scr-booking')" class="primary-btn" style="background:none; border:1px solid #444; color:#fff;">BACK</button>
-            <button onclick="location.reload()" style="background:none; color:red; border:none; margin-top:20px; font-size:10px; cursor:pointer;">LOGOUT</button>
+            <p style="font-size: 10px; color: var(--gold); letter-spacing: 3px; font-weight: 800;">HISTORY & VOUCHERS</p>
+            <div id="p-history" class="internal-scroll" style="border-top:1px solid #222;"></div>
+            <div style="flex-shrink:0;"><button onclick="transition('scr-profile', 'scr-booking')" class="primary-btn" style="background:none; border:2.5px solid #444; color:#fff;">BACK</button><button onclick="location.reload()" style="background:none; color:#ff4444; border:none; margin-top:15px; font-size:12px; font-weight: 800; cursor:pointer;">LOGOUT</button></div>
         </div>
     </section>
-
-    <canvas id="export-canvas" width="400" height="400" style="display:none;"></canvas>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxCJKWSGwYMAyemsX78NdfnCQEuebVXLc-MEr9INjhonijZaWC7Yz2UfE-Blf0SOXc1/exec";
         let vault = JSON.parse(localStorage.getItem('illusive_vault') || '{}');
         let client = { name: '', photo: '', history: [], ref: '', usedRef: '' };
         let allBookings = [];
-        let ox = 0, oy = 0, sc = 1;
 
         window.onload = () => { renderVault(); };
-        function transition(f, t) { document.getElementById(f).classList.remove('active-screen'); document.getElementById(t).classList.add('active-screen'); }
+        async function transition(f, t) { 
+            if(t === 'scr-booking') { showSync("REFRESHING..."); await fetchAll(); hideSync(); }
+            document.getElementById(f).style.display = 'none'; document.getElementById(t).style.display = 'flex';
+            document.getElementById('booking-header').style.display = (t === 'scr-booking') ? 'flex' : 'none';
+        }
+
         function showSync(txt) { document.getElementById('sync-text').innerText = txt; document.getElementById('pop-sync').style.display = 'flex'; }
         function hideSync() { document.getElementById('pop-sync').style.display = 'none'; }
 
         function renderVault() {
-            const list = document.getElementById('vault-list');
-            const keys = Object.keys(vault);
-            if(keys.length > 0) {
-                document.getElementById('vault-area').style.display = 'block';
-                list.innerHTML = keys.map(k => `<div onclick="quickLogin('${k}')" style="margin:0 10px; cursor:pointer;"><div class="nav-profile">${vault[k].photo ? `<img src="${vault[k].photo}" style="width:100%;height:100%;object-fit:cover;">` : `<span>${k[0]}</span>`}</div></div>`).join('');
-            }
+            const list = document.getElementById('vault-list'); const keys = Object.keys(vault);
+            if(keys.length > 0) { document.getElementById('vault-area').style.display = 'block'; list.innerHTML = keys.map(k => `<div style="margin: 0 10px; cursor: pointer;" onclick="quickLogin('${k}')"><div class="avatar-frame" style="border-color:var(--gold);">${vault[k].photo ? `<img src="${vault[k].photo}">` : `<span style="color:var(--gold); font-weight:900;">${k[0]}</span>`}</div></div>`).join(''); }
         }
 
         function quickLogin(name) { client = vault[name]; login(true); }
 
         async function login(auto = false) {
             if(!auto) {
-                const n = document.getElementById('in-name').value.trim();
-                const r = document.getElementById('in-ref-code').value.trim();
+                const n = document.getElementById('in-name').value.trim(); const r = document.getElementById('in-ref-code').value.trim();
                 if(!n) return;
                 client = vault[n] || { name: n, photo: '', history: [], ref: 'ILL-'+n.substring(0,3).toUpperCase()+Math.floor(100+Math.random()*899), usedRef: r || 'NONE' };
             }
-            showSync("CONNECTING STUDIO...");
-            document.getElementById('p-name').innerText = client.name;
-            document.getElementById('p-ref-code').innerText = client.ref;
-            if(client.photo) applyUI(client.photo);
-            save(); await fetchAll();
-            document.getElementById('top-nav').style.display = 'flex';
-            hideSync(); transition('scr-landing', 'scr-booking');
+            showSync("CONNECTING..."); save(); await fetchAll(); hideSync(); transition('scr-landing', 'scr-booking');
         }
 
         async function fetchAll() { 
             try { 
-                const r = await fetch(API_URL); 
-                const data = await r.json();
-                allBookings = data.bookings; 
-                if(data.admin) syncAdminUI(data.admin);
+                const r = await fetch(API_URL + "?v=" + new Date().getTime()); 
+                const data = await r.json(); allBookings = data.bookings; 
+                if(data.admin && data.admin.photo) {
+                    const admImg = document.getElementById('admin-photo');
+                    admImg.src = data.admin.photo; admImg.style.display = 'block';
+                }
                 renderDates(); updateHistory(); 
             } catch(e){ renderDates(); } 
         }
 
-        function syncAdminUI(admin) {
-            document.querySelectorAll('.studio-name-display').forEach(el => el.innerText = admin.name + " STUDIO");
-            document.querySelector('.landing-logo').innerText = admin.name;
-            document.getElementById('admin-name-pop').innerText = admin.name;
-            document.getElementById('admin-titles').innerHTML = `<div>${admin.title1}</div><div>${admin.title2}</div><div>${admin.title3}</div>`;
-        }
-
         function renderDates() {
-            const sc = document.getElementById('date-scroller');
-            const mo = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-            sc.innerHTML = '';
-            for(let i=1; i<=30; i++){
-                const d = new Date(); d.setDate(d.getDate() + i);
-                const dKey = mo[d.getMonth()] + " " + d.getDate();
-                const dayB = allBookings.filter(b => b.date === dKey);
-                const mine = client.history.some(h => h.date === dKey);
+            const sc = document.getElementById('date-scroller'); sc.innerHTML = ''; let today = new Date();
+            for(let i=0; i<=90; i++){
+                let d = new Date(today); d.setDate(today.getDate() + i); const dKey = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][d.getMonth()] + " " + d.getDate();
+                const dayB = allBookings.filter(b => b.date === dKey); const mine = client.history.some(h => h.date === dKey);
                 let full = (client.style === 'Complex' && dayB.some(b => b.style === 'Complex')) || dayB.length >= 2 || mine;
-                const ti = document.createElement('div');
-                ti.className = `tile ${full ? 'locked' : ''}`;
-                ti.innerHTML = `${full ? `<span style="position:absolute;top:5px;width:100%;left:0;font-size:7px;font-weight:900;">${mine ? 'BOOKED' : 'FULL'}</span>` : ''}<strong>${d.getDate()}</strong><br>${mo[d.getMonth()]}`;
+                const ti = document.createElement('div'); ti.className = `tile ${full ? 'locked' : ''}`;
+                ti.innerHTML = `${full ? `<span style="position:absolute;top:10px;width:100%;left:0;font-size:9px;font-weight:900;">${mine ? 'BOOKED' : 'FULL'}</span>` : ''}<strong>${d.getDate()}</strong><br>${["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][d.getMonth()]}`;
                 if(!full) ti.onclick = () => { document.querySelectorAll('#date-scroller .tile').forEach(t=>t.classList.remove('selected')); ti.classList.add('selected'); client.date = dKey; };
                 sc.appendChild(ti);
             }
         }
 
-        function initCrop(input) { if(input.files[0]) { const r = new FileReader(); r.onload = e => { document.getElementById('crop-img').src = e.target.result; ox=0; oy=0; sc=1; updateCrop(); document.getElementById('crop-overlay').style.display = 'flex'; }; r.readAsDataURL(input.files[0]); } }
-        function moveImg(x,y) { ox+=x; oy+=y; updateCrop(); }
-        document.getElementById('zoom-slider').oninput = e => { sc=e.target.value; updateCrop(); };
-        function updateCrop() { document.getElementById('crop-img').style.transform = `translate(calc(-50% + ${ox}px), calc(-50% + ${oy}px)) scale(${sc})`; }
-
-        async function saveCrop() {
-            showSync("SAVING PHOTO...");
-            const canvas = document.getElementById('export-canvas');
-            const ctx = canvas.getContext('2d');
-            const img = document.getElementById('crop-img');
-            ctx.fillStyle = "#111"; ctx.fillRect(0,0,400,400);
-            ctx.save(); ctx.translate(200 + ox, 200 + oy); ctx.scale(sc, sc);
-            const ratio = Math.max(400/img.naturalWidth, 400/img.naturalHeight);
-            ctx.drawImage(img, -img.naturalWidth*ratio/2, -img.naturalHeight*ratio/2, img.naturalWidth*ratio, img.naturalHeight*ratio);
-            ctx.restore();
-            client.photo = canvas.toDataURL("image/jpeg", 0.7);
-            applyUI(client.photo); save(); renderVault();
-            document.getElementById('crop-overlay').style.display = 'none'; hideSync();
-        }
-
         async function book() {
             if(!client.date || !client.style || !client.time) return;
-            showSync("SECURING SLOT...");
+            const btnText = document.getElementById('btn-text'); const btnCheck = document.getElementById('btn-check');
+            showSync("VERIFYING...");
+            const r = await fetch(API_URL + "?v=" + new Date().getTime()); const data = await r.json();
+            const conflict = data.bookings.filter(b => b.date === client.date);
+            if((client.style === 'Complex' && conflict.some(b => b.style === 'Complex')) || conflict.length >= 2) {
+                alert("Conflict: Slot taken!"); hideSync(); fetchAll(); return;
+            }
+            btnText.innerText = "VERIFIED"; btnCheck.style.display = "inline-block";
             await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(client) });
-            document.getElementById('reward-earned-text').innerText = client.style === 'Complex' ? '₱500 VOUCHER' : '₱100 VOUCHER';
             client.history.unshift({date: client.date, style: client.style, time: client.time});
-            save(); hideSync(); document.getElementById('pop-thanks').style.display = 'flex';
+            save(); await fetchAll(); hideSync(); 
+            btnText.innerText = "SECURE SESSION"; btnCheck.style.display = "none";
+            transition('scr-booking', 'scr-profile');
         }
 
-        function updateHistory() { 
-            const vVault = document.getElementById('voucher-vault');
-            vVault.innerHTML = '';
-            const rewards = allBookings.filter(b => b.codeUsed === client.ref);
-            if(rewards.length === 0) { vVault.innerHTML = '<p style="font-size:8px; opacity:0.5;">No vouchers yet. Share your code!</p>'; }
-            rewards.forEach(r => {
-                const item = document.createElement('div');
-                item.className = 'voucher-item';
-                item.innerHTML = `<div class="voucher-header"><strong>${r.style === 'Complex' ? '₱500' : '₱100'} OFF</strong><i class="fas fa-chevron-down"></i></div><div class="voucher-details">REFERRED: <strong>${r.name}</strong><br>STYLE: ${r.style}<br>DATE: ${r.date}</div>`;
-                item.onclick = () => item.classList.toggle('expanded');
-                vVault.appendChild(item);
-            });
-            document.getElementById('p-history').innerHTML = client.history.map(h => `<div style="padding:10px 0; border-bottom:1px solid #222;">${h.date} | ${h.style} @ ${h.time}</div>`).join(''); 
-        }
-
-        function save() { vault[client.name] = client; localStorage.setItem('illusive_vault', JSON.stringify(vault)); }
         function applyUI(d) { document.getElementById('p-img').src = d; document.getElementById('p-img').style.display='block'; document.getElementById('nav-img').src = d; document.getElementById('nav-img').style.display='block'; }
+        function save() { vault[client.name] = client; localStorage.setItem('illusive_vault', JSON.stringify(vault)); }
+        function updateHistory() { 
+            const hist = document.getElementById('p-history');
+            const rewards = allBookings.filter(b => b.codeUsed === client.ref);
+            let html = rewards.map(r => `<div class="v-item" style="border:1px solid var(--gold); border-radius:15px; background:rgba(212,175,55,0.1); padding:15px; margin-bottom:10px; text-align:left;"><span style="color:var(--gold); font-weight:800;">₱${r.style==='Complex'?'500':'100'} DISCOUNT</span><br><span style="font-size:10px;">REFERRAL: ${r.name}</span></div>`).join('');
+            html += client.history.map(h => `<div style="padding:15px; border-bottom:1px solid #111; font-size:14px; opacity:0.8; text-align:left;">${h.date} | ${h.style} @ ${h.time}</div>`).join('');
+            hist.innerHTML = html || '<p style="font-size:12px; opacity:0.3; margin-top:25px;">NO DATA</p>';
+        }
+        function initCrop(input) { if(input.files[0]) { const r = new FileReader(); r.onload = e => { client.photo = e.target.result; applyUI(client.photo); save(); renderVault(); }; r.readAsDataURL(input.files[0]); } }
         function setStyles(el, s) { document.querySelectorAll('.s-tile').forEach(t=>t.classList.remove('selected')); el.classList.add('selected'); client.style = s; renderDates(); }
         function setTimes(el, t) { document.querySelectorAll('.t-tile').forEach(t=>t.classList.remove('selected')); el.classList.add('selected'); client.time = t; }
         function toProfile() { transition('scr-booking', 'scr-profile'); updateHistory(); }
