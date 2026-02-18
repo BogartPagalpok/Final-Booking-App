@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Illusive Studio v2.2.1 | Stable</title>
+    <title>Illusive Studio v2.2.2 | Base Stable</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -32,9 +32,9 @@
 </head>
 <body>
 
-    <div class="banner">₱500 OFF YOUR FIRST APP BOOKING • v2.2.1 BASE STABLE</div>
+    <div class="banner">₱500 OFF YOUR FIRST APP BOOKING • v2.2.2 BASE STABLE</div>
 
-    <div id="pop-sync" class="popup-overlay"><div class="glass-card"><div style="border:3px solid var(--gold); border-top-color:transparent; width:40px; height:40px; border-radius:50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px;"></div><p id="sync-text" style="font-size: 10px; color: var(--gold); letter-spacing: 3px;">SYNCING STUDIO...</p></div></div>
+    <div id="pop-sync" class="popup-overlay"><div class="glass-card"><div style="border:3px solid var(--gold); border-top-color:transparent; width:40px; height:40px; border-radius:50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px;"></div><p id="sync-text" style="font-size: 10px; color: var(--gold); letter-spacing: 3px;">SYNCING...</p></div></div>
     <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 
     <div id="pop-thanks" class="popup-overlay">
@@ -45,7 +45,18 @@
         </div>
     </div>
 
-    <div id="pop-bio" class="popup-overlay" onclick="this.style.display='none'"><div class="glass-card" id="admin-bio-content" onclick="event.stopPropagation()"></div></div>
+    <div id="pop-bio" class="popup-overlay" onclick="this.style.display='none'">
+        <div class="glass-card" onclick="event.stopPropagation()">
+            <h2 id="admin-name-pop" class="logo-text" style="color:var(--gold); border:none; margin-bottom:20px;">IAN LESTER</h2>
+            <div id="admin-titles" style="font-size: 10px; letter-spacing: 2px; color: #aaa; margin: 8px 0;">
+                <div>Tattoo Artist</div><div>Photographer</div><div>Social Media Manager</div>
+            </div>
+            <div style="display:flex; justify-content:center; gap:25px; margin-top:25px;">
+                <a href="https://www.facebook.com/share/1CUUe8eweg/" target="_blank" style="color:var(--gold); font-size:22px;"><i class="fab fa-facebook"></i></a>
+                <a href="mailto:yhanlhester@gmail.com" style="color:var(--gold); font-size:22px;"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </div>
 
     <nav id="top-nav">
         <div class="logo-text studio-name-display" onclick="document.getElementById('pop-bio').style.display='flex'" style="font-size: 0.75rem;">ILLUSIVE STUDIO</div>
@@ -163,17 +174,8 @@
         function syncAdminUI(admin) {
             document.querySelectorAll('.studio-name-display').forEach(el => el.innerText = admin.name + " STUDIO");
             document.querySelector('.landing-logo').innerText = admin.name;
-            const bioBox = document.getElementById('admin-bio-content');
-            bioBox.innerHTML = `
-                <h2 class="logo-text" style="color:var(--gold); border:none; margin-bottom:20px;">${admin.name}</h2>
-                <div style="font-size: 10px; letter-spacing: 2px; color: #aaa; margin: 8px 0;">${admin.title1}</div>
-                <div style="font-size: 10px; letter-spacing: 2px; color: #aaa; margin: 8px 0;">${admin.title2}</div>
-                <div style="font-size: 10px; letter-spacing: 2px; color: #aaa; margin: 8px 0;">${admin.title3}</div>
-                <div style="display:flex; justify-content:center; gap:25px; margin-top:25px;">
-                    <a href="https://www.facebook.com/share/1CUUe8eweg/" target="_blank" style="color:var(--gold); font-size:22px;"><i class="fab fa-facebook"></i></a>
-                    <a href="mailto:yhanlhester@gmail.com" style="color:var(--gold); font-size:22px;"><i class="fas fa-envelope"></i></a>
-                </div>
-            `;
+            document.getElementById('admin-name-pop').innerText = admin.name;
+            document.getElementById('admin-titles').innerHTML = `<div>${admin.title1}</div><div>${admin.title2}</div><div>${admin.title3}</div>`;
         }
 
         function renderDates() {
@@ -189,7 +191,7 @@
                 const ti = document.createElement('div');
                 ti.className = `tile ${full ? 'locked' : ''}`;
                 ti.innerHTML = `${full ? `<span style="position:absolute;top:5px;width:100%;left:0;font-size:7px;font-weight:900;">${mine ? 'BOOKED' : 'FULL'}</span>` : ''}<strong>${d.getDate()}</strong><br>${mo[d.getMonth()]}`;
-                if(!full) ti.onclick = () => { document.querySelectorAll('#date-scroller .tile').forEach(t=>t.classList.remove('selected')); ti.classList.add('active'); ti.classList.add('selected'); client.date = dKey; };
+                if(!full) ti.onclick = () => { document.querySelectorAll('#date-scroller .tile').forEach(t=>t.classList.remove('selected')); ti.classList.add('selected'); client.date = dKey; };
                 sc.appendChild(ti);
             }
         }
@@ -227,7 +229,7 @@
             const vVault = document.getElementById('voucher-vault');
             vVault.innerHTML = '';
             const rewards = allBookings.filter(b => b.codeUsed === client.ref);
-            if(rewards.length === 0) { vVault.innerHTML = '<p style="font-size:8px; opacity:0.5;">No vouchers yet.</p>'; }
+            if(rewards.length === 0) { vVault.innerHTML = '<p style="font-size:8px; opacity:0.5;">No vouchers yet. Share your code!</p>'; }
             rewards.forEach(r => {
                 const item = document.createElement('div');
                 item.className = 'voucher-item';
