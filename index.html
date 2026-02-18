@@ -3,324 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Illusive Studio v1.8.5 | Rebirth</title>
+    <title>Illusive Studio v2.2.1 | Stable</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #d4af37; --bg: #050505; --glass: rgba(255, 255, 255, 0.08); --border: rgba(212, 175, 55, 0.5); --font-modegi: 'Cormorant Garamond', serif; --red: #ff3333; --success: #00ff88; }
+        :root { --gold: #d4af37; --bg: #050505; --glass: rgba(255, 255, 255, 0.05); --border: rgba(212, 175, 55, 0.3); --font-modegi: 'Cormorant Garamond', serif; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .brand-modegi { font-family: var(--font-modegi); text-transform: uppercase; letter-spacing: 5px; font-weight: 700; font-style: italic; }
-        
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 50000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        #crop-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 60000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .spinner { width: 40px; height: 40px; border: 3px solid rgba(212,175,55,0.1); border-top: 3px solid var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .banner { background: var(--gold); color: #000; font-weight: 800; font-size: 10px; padding: 12px; position: fixed; top: 0; width: 100%; letter-spacing: 2px; text-align: center; z-index: 1000; }
-        .screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); z-index: 10; transition: 0.5s; }
-        .hidden { opacity: 0; pointer-events: none; visibility: hidden; }
-        .glass-card { background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--border); border-radius: 40px; padding: 40px 30px; width: 92%; max-width: 400px; text-align: center; }
-        
-        /* v1.8.5 STABLE PRECISION CROPPER */
-        .crop-circle { width: 250px; height: 250px; border: 2px solid var(--gold); border-radius: 50%; overflow: hidden; position: relative; background: #111; margin-bottom: 20px; }
-        #crop-preview { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); min-width: 100%; min-height: 100%; }
-        .move-ctrl { display: grid; grid-template-columns: repeat(3, 40px); gap: 10px; justify-content: center; margin-bottom: 20px; }
-        .dir-btn { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; color: var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-        .scroller { display: flex; overflow-x: auto; gap: 12px; padding: 15px 5px; scrollbar-width: none; width: 100%; -webkit-overflow-scrolling: touch; }
-        .tile { min-width: 95px; padding: 18px 10px; border: 1px solid var(--border); border-radius: 20px; background: rgba(0,0,0,0.4); cursor: pointer; transition: 0.3s; flex-shrink: 0; position: relative; }
-        .tile.active { background: var(--gold); color: #000; font-weight: 800; border-color: #fff; }
-        .tile.full { background: var(--red) !important; color: #fff; border-color: var(--red); pointer-events: none; opacity: 1; }
-        .status-tag { position: absolute; top: 5px; width: 100%; left: 0; font-size: 7px; font-weight: 900; text-transform: uppercase; }
-
-        .vault-scroller { display: flex; overflow-x: auto; gap: 15px; padding: 10px; margin-bottom: 20px; width: 100%; justify-content: center; }
-        .vault-item { flex-shrink: 0; cursor: pointer; text-align: center; width: 75px; }
-        .vault-avatar { width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--gold); overflow: hidden; background: #111; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; }
-        .vault-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-        .avatar-box { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin: 0 auto 20px; overflow: hidden; background: #111; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .primary-btn { background: var(--gold); color: #000; border: none; padding: 22px; width: 100%; border-radius: 22px; font-weight: 800; text-transform: uppercase; margin-top: 10px; letter-spacing: 2px; cursor: pointer; }
-        input { width: 100%; padding: 18px; background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 20px; color: white; text-align: center; margin-bottom: 15px; }
-        .contact-footer { margin-top: 25px; border-top: 1px solid rgba(212,175,55,0.2); padding-top: 15px; }
-        .contact-links { display: flex; justify-content: center; gap: 20px; margin-top: 10px; }
-        .contact-links a { color: var(--gold); font-size: 20px; }
-
-        #confirm-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 20000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); z-index: 100; padding: 20px; }
+        .active-screen { display: flex !important; }
+        .logo-text { font-family: var(--font-modegi); text-transform: uppercase; letter-spacing: 6px; font-weight: 700; font-style: italic; color: var(--gold); border-bottom: 1px solid var(--gold); padding-bottom: 5px; cursor: pointer; text-decoration: none; }
+        .banner { background: var(--gold); color: #000; font-weight: 800; font-size: 10px; padding: 12px; position: fixed; top: 0; width: 100%; letter-spacing: 2px; text-align: center; z-index: 2000000; }
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); z-index: 2000000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
+        .glass-card { background: var(--glass); backdrop-filter: blur(40px); border: 1px solid var(--border); border-radius: 40px; padding: 35px 25px; width: 100%; max-width: 400px; text-align: center; }
+        nav#top-nav { position: fixed; top: 40px; width: 100%; padding: 0 30px; display: none; justify-content: space-between; align-items: center; z-index: 500000; }
+        .nav-profile { width: 50px; height: 50px; border: 1.5px solid var(--gold); border-radius: 50%; overflow: hidden; background: #111; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .scroller { display: flex; overflow-x: auto; gap: 12px; padding: 15px 5px; width: 100%; scrollbar-width: none; }
+        .tile { min-width: 95px; padding: 20px 10px; border: 1px solid var(--border); border-radius: 20px; background: rgba(0,0,0,0.4); cursor: pointer; flex-shrink: 0; position: relative; font-size: 11px; }
+        .tile.selected { background: var(--gold); color: #000; font-weight: 800; border-color: #fff; }
+        .tile.locked { opacity: 0.3; pointer-events: none; color: #ff4444; border-color: #ff4444; }
+        .voucher-item { background: rgba(212, 175, 55, 0.08); border: 1px solid var(--gold); border-radius: 15px; margin: 10px 0; overflow: hidden; transition: 0.3s; cursor: pointer; text-align: left; }
+        .voucher-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .voucher-details { max-height: 0; padding: 0 15px; transition: 0.3s; opacity: 0; font-size: 10px; color: #aaa; border-top: 1px solid rgba(212,175,55,0.2); overflow: hidden; }
+        .voucher-item.expanded .voucher-details { max-height: 120px; padding: 15px; opacity: 1; }
+        .primary-btn { background: var(--gold); color: #000; border: none; padding: 22px; width: 100%; border-radius: 24px; font-weight: 800; text-transform: uppercase; margin-top: 15px; letter-spacing: 2px; cursor: pointer; }
+        input { width: 100%; padding: 20px; background: rgba(0,0,0,0.8); border: 1px solid var(--border); border-radius: 20px; color: white; text-align: center; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <div id="loader"><div class="spinner"></div><div class="brand-modegi" style="font-size: 10px; color: var(--gold); letter-spacing: 3px;">Establishing Sync...</div></div>
-    <div class="banner">₱500 OFF YOUR FIRST SESSION • v1.8.5</div>
+    <div class="banner">₱500 OFF YOUR FIRST APP BOOKING • v2.2.1 BASE STABLE</div>
 
-    <div id="crop-overlay">
-        <p class="brand-modegi" style="color: var(--gold); font-size: 11px; margin-bottom: 15px;">Center Your Profile</p>
-        <div class="crop-circle"><img id="crop-preview" src=""></div>
-        
-        <div class="move-ctrl">
-            <div></div><div class="dir-btn" onclick="moveImg(0, -10)"><i class="fas fa-arrow-up"></i></div><div></div>
-            <div class="dir-btn" onclick="moveImg(-10, 0)"><i class="fas fa-arrow-left"></i></div>
-            <div class="dir-btn" style="border:none; color:#555;"><i class="fas fa-arrows-alt"></i></div>
-            <div class="dir-btn" onclick="moveImg(10, 0)"><i class="fas fa-arrow-right"></i></div>
-            <div></div><div class="dir-btn" onclick="moveImg(0, 10)"><i class="fas fa-arrow-down"></i></div><div></div>
-        </div>
+    <div id="pop-sync" class="popup-overlay"><div class="glass-card"><div style="border:3px solid var(--gold); border-top-color:transparent; width:40px; height:40px; border-radius:50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px;"></div><p id="sync-text" style="font-size: 10px; color: var(--gold); letter-spacing: 3px;">SYNCING STUDIO...</p></div></div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 
-        <input type="range" id="zoom-slider" min="0.5" max="3" step="0.1" value="1" style="width: 200px; accent-color: var(--gold); margin-bottom: 20px;">
-        
-        <div style="display:flex; gap:15px; width:90%; max-width:320px;">
-            <button class="primary-btn" style="background:#1a1a1a; color:#fff; flex:1; padding:15px;" onclick="closeCropper()">Cancel</button>
-            <button id="set-profile-btn" class="primary-btn" style="flex:1; padding:15px;" onclick="confirmCrop()">Set Profile</button>
-        </div>
-    </div>
-
-    <div id="confirm-overlay">
-        <div style="font-size: 80px; color: var(--gold); margin-bottom: 20px;">✓</div>
-        <h1 class="brand-modegi" style="color:var(--gold)">SESSION SECURED</h1>
-        <button class="primary-btn" style="width: 200px;" onclick="closeConfirm()">VIEW PROFILE</button>
-    </div>
-
-    <section id="scr-landing" class="screen">
+    <div id="pop-thanks" class="popup-overlay">
         <div class="glass-card">
-            <h1 class="brand-modegi" style="font-size: 2.8rem; margin-bottom: 20px;" onmousedown="startReset()" onmouseup="stopReset()" ontouchstart="startReset()" ontouchend="stopReset()">ILLUSIVE</h1>
-            <div id="vault-section" style="display:none; width: 100%;">
-                <p style="font-size: 8px; color: var(--gold); letter-spacing: 2px; margin-bottom: 10px;">RECENT SESSIONS</p>
-                <div class="vault-scroller" id="vault-list"></div>
+            <h2 class="logo-text" style="font-size: 1.5rem; border:none; color:var(--gold); margin-bottom: 10px;">SUCCESS</h2>
+            <p style="font-size: 10px; letter-spacing: 2px; line-height:1.6; margin-bottom: 25px;">SESSION SECURED!<br><span id="reward-earned-text" style="color:var(--gold); font-weight:800;"></span><br>THANK YOU FOR BOOKING.</p>
+            <button class="primary-btn" onclick="document.getElementById('pop-thanks').style.display='none'; transition('scr-booking', 'scr-profile'); fetchAll();">CONTINUE</button>
+        </div>
+    </div>
+
+    <div id="pop-bio" class="popup-overlay" onclick="this.style.display='none'"><div class="glass-card" id="admin-bio-content" onclick="event.stopPropagation()"></div></div>
+
+    <nav id="top-nav">
+        <div class="logo-text studio-name-display" onclick="document.getElementById('pop-bio').style.display='flex'" style="font-size: 0.75rem;">ILLUSIVE STUDIO</div>
+        <div class="nav-profile" onclick="toProfile()"><img id="nav-img" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="nav-init">U</span></div>
+    </nav>
+
+    <div id="crop-overlay" class="popup-overlay">
+        <div class="glass-card">
+            <p style="font-size: 8px; color: var(--gold); letter-spacing: 2px; margin-bottom: 20px;">CENTER PROFILE PHOTO</p>
+            <div style="width: 250px; height: 250px; border: 2px solid var(--gold); border-radius: 50%; overflow: hidden; position: relative; margin: 0 auto; background: #111;">
+                <img id="crop-img" style="position:absolute; transform-origin:center; top:50%; left:50%; transform: translate(-50%, -50%);">
             </div>
-            <div id="new-user-inputs">
-                <input type="text" id="in-name" placeholder="FULL NAME">
-                <button onclick="login()" class="primary-btn">ACCESS STUDIO</button>
+            <div style="display:grid; grid-template-columns: repeat(3, 45px); gap: 10px; margin-top: 25px; justify-content: center;">
+                <div></div><button class="primary-btn" onclick="moveImg(0,-10)" style="padding:10px;"><i class="fas fa-arrow-up"></i></button><div></div>
+                <button class="primary-btn" onclick="moveImg(-10,0)" style="padding:10px;"><i class="fas fa-arrow-left"></i></button>
+                <button class="primary-btn" onclick="moveImg(0,0)" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:10px;"><i class="fas fa-sync"></i></button>
+                <button class="primary-btn" onclick="moveImg(10,0)" style="padding:10px;"><i class="fas fa-arrow-right"></i></button>
+                <div></div><button class="primary-btn" onclick="moveImg(0,10)" style="padding:10px;"><i class="fas fa-arrow-down"></i></button><div></div>
             </div>
+            <input type="range" id="zoom-slider" min="1" max="3" step="0.1" value="1" style="width: 200px; margin-top: 15px; accent-color: var(--gold);">
+            <button class="primary-btn" onclick="saveCrop()">CONFIRM PHOTO</button>
+        </div>
+    </div>
+
+    <section id="scr-landing" class="screen active-screen">
+        <h1 class="logo-text landing-logo" style="font-size: 3rem; border:none; margin-bottom: 30px;">ILLUSIVE</h1>
+        <div class="glass-card">
+            <div id="vault-area" style="display:none; margin-bottom: 20px;">
+                <p style="font-size: 8px; color: var(--gold); letter-spacing: 2px;">RECENT SESSIONS</p>
+                <div class="scroller" id="vault-list" style="justify-content:center;"></div>
+            </div>
+            <input type="text" id="in-name" placeholder="FULL NAME">
+            <input type="text" id="in-ref-code" placeholder="REFERRAL CODE (OPTIONAL)" style="border-style:dashed; opacity:0.7; font-size:12px;">
+            <button onclick="login()" class="primary-btn">ACCESS STUDIO</button>
         </div>
     </section>
 
-    <section id="scr-booking" class="screen hidden">
-        <nav style="position:fixed; top:40px; width:100%; padding:30px; display:flex; justify-content:space-between; align-items:center; z-index:100;">
-            <div class="brand-modegi" style="font-size: 0.8rem;">ILLUSIVE STUDIO</div>
-            <div onclick="toProfile()" style="width:45px; height:45px; border:1px solid var(--gold); border-radius:50%; overflow:hidden; background:#111; display:flex; align-items:center; justify-content:center; cursor:pointer;">
-                <img id="nav-avatar" style="width:100%; height:100%; object-fit:cover; display:none;"><span id="nav-letter" style="font-weight:800;">U</span>
-            </div>
-        </nav>
-        <div class="glass-card" style="margin-top: 50px;">
+    <section id="scr-booking" class="screen">
+        <div class="glass-card">
             <p style="font-size: 8px; color: var(--gold); letter-spacing: 3px;">I. STYLE</p>
-            <div class="scroller" style="justify-content:center;"><div class="tile s-tile" onclick="setS(this, 'Minimalist')">MINIMAL</div><div class="tile s-tile" onclick="setS(this, 'Complex')">COMPLEX</div></div>
-            <p style="font-size: 8px; color: var(--gold); letter-spacing: 3px; margin-top:10px;">II. DATE</p><div class="scroller" id="date-scroller"></div>
-            <p style="font-size: 8px; color: var(--gold); letter-spacing: 3px; margin-top:10px;">III. TIME</p>
-            <div class="scroller" style="justify-content:center;"><div class="tile t-tile" onclick="setT(this, '10:00 AM')">10 AM</div><div class="tile t-tile" onclick="setT(this, '01:00 PM')">01 PM</div></div>
-            <button id="book-btn" onclick="book()" class="primary-btn">SECURE SLOT</button>
+            <div class="scroller" style="justify-content:center;"><div class="tile s-tile" onclick="setStyles(this, 'Minimalist')">MINIMAL</div><div class="tile s-tile" onclick="setStyles(this, 'Complex')">COMPLEX</div></div>
+            <p style="font-size: 8px; color: var(--gold); letter-spacing: 3px; margin-top:20px;">II. DATE</p><div class="scroller" id="date-scroller"></div>
+            <p style="font-size: 8px; color: var(--gold); letter-spacing: 3px; margin-top:20px;">III. TIME</p>
+            <div class="scroller" style="justify-content:center;"><div class="tile t-tile" onclick="setTimes(this, '10:00 AM')">10 AM</div><div class="tile t-tile" onclick="setTimes(this, '01:00 PM')">01 PM</div></div>
+            <button onclick="book()" class="primary-btn">SECURE SLOT</button>
         </div>
     </section>
 
-    <section id="scr-profile" class="screen hidden">
+    <section id="scr-profile" class="screen">
         <div class="glass-card">
-            <div class="avatar-box" onclick="document.getElementById('file-in').click()"><img id="p-avatar" style="display:none;"><span id="p-letter" style="font-size:2rem;" class="brand-modegi">U</span></div>
-            <input type="file" id="file-in" hidden accept="image/*" onchange="upImg(this)">
-            <h2 id="p-name" class="brand-modegi" style="margin-bottom: 5px;">USER</h2>
-            <p id="p-ref-code" onclick="copyRef()" style="letter-spacing: 4px; font-weight: 800; color: var(--gold); font-size: 14px; cursor:pointer; margin-bottom: 20px;">ILL-XXXX</p>
-            <div id="hist-list" style="max-height: 120px; overflow-y: auto; text-align: center; font-size: 11px; margin-bottom: 15px; border-top: 1px solid #222; padding-top: 10px;"></div>
-            <button onclick="transition('scr-profile', 'scr-booking')" class="primary-btn" style="background:none; border:1px solid var(--border); color:#fff; padding:15px;">BACK</button>
-            <div class="contact-footer"><p style="font-size: 9px; color: #777; letter-spacing: 2px; margin:0;">CONTACT DEVELOPER</p><p style="font-size: 11px; color: var(--gold); font-weight: 800; margin: 5px 0;">Ian Lester</p><div class="contact-links"><a href="https://www.facebook.com/share/1CUUe8eweg/" target="_blank"><i class="fab fa-facebook"></i></a><a href="mailto:yhanlhester@gmail.com"><i class="fas fa-envelope"></i></a></div></div>
-            <p onclick="deleteAccount()" style="font-size: 10px; color: var(--red); margin-top: 20px; cursor: pointer; text-decoration: underline;">DELETE PROFILE</p>
+            <div class="nav-profile" style="width:110px; height:110px; margin: 0 auto 20px;" onclick="document.getElementById('file-in').click()">
+                <img id="p-img" style="width:100%; height:100%; object-fit:cover; display:none;"><span>U</span>
+            </div>
+            <input type="file" id="file-in" hidden accept="image/*" onchange="initCrop(this)">
+            <h2 id="p-name" class="logo-text" style="border:none; margin-bottom:5px;">USER</h2>
+            <p id="p-ref-code" onclick="copyRef()" style="letter-spacing: 4px; font-weight: 800; color: var(--gold); font-size: 14px; cursor:pointer; margin-bottom: 10px;">ILL-XXXX</p>
+            <p style="font-size: 8px; color: var(--gold); letter-spacing: 2px; margin-top: 10px;">EARNED VOUCHERS</p>
+            <div id="voucher-vault" style="max-height: 180px; overflow-y: auto; margin-bottom:15px;"></div>
+            <button onclick="transition('scr-profile', 'scr-booking')" class="primary-btn" style="background:none; border:1px solid #444; color:#fff;">BACK</button>
+            <button onclick="location.reload()" style="background:none; color:red; border:none; margin-top:20px; font-size:10px; cursor:pointer;">LOGOUT</button>
         </div>
     </section>
 
-    <canvas id="export-canvas" width="300" height="300" style="display:none;"></canvas>
+    <canvas id="export-canvas" width="400" height="400" style="display:none;"></canvas>
 
     <script>
-        const URL = "https://script.google.com/macros/s/AKfycbySoYE0-D8HT0NCmo0cIA88AZfphBjyGZVSDmXGZqK62u3obBvkgzyW-LjC8lhqh58X/exec";
-        let userVault = JSON.parse(localStorage.getItem('illusive_vault') || '{}');
-        let client = { name: '', photo: '', style: '', date: '', time: '', history: [], ref: '', usedRef: '' };
-        let masterBookings = [];
-        let resetTimer;
-
-        // PRECISION CROPPER VARS
-        let offsetX = -50, offsetY = -50, scale = 1;
-        const imgPreview = document.getElementById('crop-preview');
+        const API_URL = "https://script.google.com/macros/s/AKfycbxCJKWSGwYMAyemsX78NdfnCQEuebVXLc-MEr9INjhonijZaWC7Yz2UfE-Blf0SOXc1/exec";
+        let vault = JSON.parse(localStorage.getItem('illusive_vault') || '{}');
+        let client = { name: '', photo: '', history: [], ref: '', usedRef: '' };
+        let allBookings = [];
+        let ox = 0, oy = 0, sc = 1;
 
         window.onload = () => { renderVault(); };
+        function transition(f, t) { document.getElementById(f).classList.remove('active-screen'); document.getElementById(t).classList.add('active-screen'); }
+        function showSync(txt) { document.getElementById('sync-text').innerText = txt; document.getElementById('pop-sync').style.display = 'flex'; }
+        function hideSync() { document.getElementById('pop-sync').style.display = 'none'; }
 
         function renderVault() {
-            const vaultList = document.getElementById('vault-list');
-            const keys = Object.keys(userVault);
-            if (keys.length > 0) {
-                document.getElementById('vault-section').style.display = 'block';
-                vaultList.innerHTML = keys.map(name => {
-                    const u = userVault[name];
-                    return `<div class="vault-item" onclick="quickLogin('${name}')"><div class="vault-avatar">${u.photo ? `<img src="${u.photo}">` : `<span class="brand-modegi" style="font-size:12px;">${name[0]}</span>`}</div><div style="font-size:8px; color:#555;">${name}</div></div>`;
-                }).join('');
+            const list = document.getElementById('vault-list');
+            const keys = Object.keys(vault);
+            if(keys.length > 0) {
+                document.getElementById('vault-area').style.display = 'block';
+                list.innerHTML = keys.map(k => `<div onclick="quickLogin('${k}')" style="margin:0 10px; cursor:pointer;"><div class="nav-profile">${vault[k].photo ? `<img src="${vault[k].photo}" style="width:100%;height:100%;object-fit:cover;">` : `<span>${k[0]}</span>`}</div></div>`).join('');
             }
         }
 
-        function quickLogin(name) { client = userVault[name]; login(true); }
+        function quickLogin(name) { client = vault[name]; login(true); }
 
         async function login(auto = false) {
-            if (!auto) {
-                const input = document.getElementById('in-name').value.trim();
-                if(!input) return;
-                client = userVault[input] || { name: input, photo: '', history: [], ref: "ILL-"+input.substring(0,3).toUpperCase()+Math.floor(10+Math.random()*89), usedRef: 'NONE' };
+            if(!auto) {
+                const n = document.getElementById('in-name').value.trim();
+                const r = document.getElementById('in-ref-code').value.trim();
+                if(!n) return;
+                client = vault[n] || { name: n, photo: '', history: [], ref: 'ILL-'+n.substring(0,3).toUpperCase()+Math.floor(100+Math.random()*899), usedRef: r || 'NONE' };
             }
-            document.getElementById('loader').style.display = 'flex';
+            showSync("CONNECTING STUDIO...");
             document.getElementById('p-name').innerText = client.name;
             document.getElementById('p-ref-code').innerText = client.ref;
-            if(client.photo) applyPhotoUI(client.photo);
-            saveVault();
-            localStorage.setItem('active_user', client.name);
-            await fetchLimits();
-            updateHistoryUI();
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('scr-landing').classList.add('hidden');
-            document.getElementById('scr-booking').classList.remove('hidden');
+            if(client.photo) applyUI(client.photo);
+            save(); await fetchAll();
+            document.getElementById('top-nav').style.display = 'flex';
+            hideSync(); transition('scr-landing', 'scr-booking');
         }
 
-        async function fetchLimits() {
-            try { const res = await fetch(URL + "?action=read"); masterBookings = await res.json(); populateDates(); } catch (e) { populateDates(); }
+        async function fetchAll() { 
+            try { 
+                const r = await fetch(API_URL); 
+                const data = await r.json();
+                allBookings = data.bookings; 
+                if(data.admin) syncAdminUI(data.admin);
+                renderDates(); updateHistory(); 
+            } catch(e){ renderDates(); } 
         }
 
-        function populateDates() {
+        function syncAdminUI(admin) {
+            document.querySelectorAll('.studio-name-display').forEach(el => el.innerText = admin.name + " STUDIO");
+            document.querySelector('.landing-logo').innerText = admin.name;
+            const bioBox = document.getElementById('admin-bio-content');
+            bioBox.innerHTML = `
+                <h2 class="logo-text" style="color:var(--gold); border:none; margin-bottom:20px;">${admin.name}</h2>
+                <div style="font-size: 10px; letter-spacing: 2px; color: #aaa; margin: 8px 0;">${admin.title1}</div>
+                <div style="font-size: 10px; letter-spacing: 2px; color: #aaa; margin: 8px 0;">${admin.title2}</div>
+                <div style="font-size: 10px; letter-spacing: 2px; color: #aaa; margin: 8px 0;">${admin.title3}</div>
+                <div style="display:flex; justify-content:center; gap:25px; margin-top:25px;">
+                    <a href="https://www.facebook.com/share/1CUUe8eweg/" target="_blank" style="color:var(--gold); font-size:22px;"><i class="fab fa-facebook"></i></a>
+                    <a href="mailto:yhanlhester@gmail.com" style="color:var(--gold); font-size:22px;"><i class="fas fa-envelope"></i></a>
+                </div>
+            `;
+        }
+
+        function renderDates() {
             const sc = document.getElementById('date-scroller');
             const mo = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
             sc.innerHTML = '';
-            for(let i=1; i<=90; i++) {
+            for(let i=1; i<=30; i++){
                 const d = new Date(); d.setDate(d.getDate() + i);
                 const dKey = mo[d.getMonth()] + " " + d.getDate();
-                const dayB = masterBookings.filter(b => b.date === dKey);
-                const alreadyByMe = client.history.some(h => h.date === dKey);
-                let isFull = (client.style === 'Complex' && dayB.some(b => b.style === 'Complex')) || dayB.length >= 2 || alreadyByMe;
+                const dayB = allBookings.filter(b => b.date === dKey);
+                const mine = client.history.some(h => h.date === dKey);
+                let full = (client.style === 'Complex' && dayB.some(b => b.style === 'Complex')) || dayB.length >= 2 || mine;
                 const ti = document.createElement('div');
-                ti.className = `tile ${isFull ? 'full' : ''}`;
-                ti.innerHTML = `${isFull ? `<span class="status-tag">${alreadyByMe ? 'BOOKED' : 'FULL'}</span>` : ''}<strong>${d.getDate()}</strong><br>${mo[d.getMonth()]}`;
-                if(!isFull) ti.onclick = () => { document.querySelectorAll('#date-scroller .tile').forEach(t=>t.classList.remove('active')); ti.classList.add('active'); client.date = dKey; };
+                ti.className = `tile ${full ? 'locked' : ''}`;
+                ti.innerHTML = `${full ? `<span style="position:absolute;top:5px;width:100%;left:0;font-size:7px;font-weight:900;">${mine ? 'BOOKED' : 'FULL'}</span>` : ''}<strong>${d.getDate()}</strong><br>${mo[d.getMonth()]}`;
+                if(!full) ti.onclick = () => { document.querySelectorAll('#date-scroller .tile').forEach(t=>t.classList.remove('selected')); ti.classList.add('active'); ti.classList.add('selected'); client.date = dKey; };
                 sc.appendChild(ti);
             }
         }
 
-        // v1.8.5 CROPPER FUNCTIONS
-        function upImg(input) {
-            if(input.files[0]) {
-                const r = new FileReader();
-                r.onload = e => { 
-                    imgPreview.src = e.target.result;
-                    offsetX = -50; offsetY = -50; scale = 1;
-                    updatePreview();
-                    document.getElementById('crop-overlay').style.display = 'flex';
-                };
-                r.readAsDataURL(input.files[0]);
-            }
-        }
+        function initCrop(input) { if(input.files[0]) { const r = new FileReader(); r.onload = e => { document.getElementById('crop-img').src = e.target.result; ox=0; oy=0; sc=1; updateCrop(); document.getElementById('crop-overlay').style.display = 'flex'; }; r.readAsDataURL(input.files[0]); } }
+        function moveImg(x,y) { ox+=x; oy+=y; updateCrop(); }
+        document.getElementById('zoom-slider').oninput = e => { sc=e.target.value; updateCrop(); };
+        function updateCrop() { document.getElementById('crop-img').style.transform = `translate(calc(-50% + ${ox}px), calc(-50% + ${oy}px)) scale(${sc})`; }
 
-        function moveImg(x, y) { offsetX += x; offsetY += y; updatePreview(); }
-        document.getElementById('zoom-slider').oninput = e => { scale = e.target.value; updatePreview(); };
-        function updatePreview() { imgPreview.style.transform = `translate(${offsetX}%, ${offsetY}%) scale(${scale})`; }
-
-        async function confirmCrop() {
-            const btn = document.getElementById('set-profile-btn'); btn.innerText = "SYNCING...";
+        async function saveCrop() {
+            showSync("SAVING PHOTO...");
             const canvas = document.getElementById('export-canvas');
             const ctx = canvas.getContext('2d');
-            
-            // Render the adjusted image to high-res canvas for the vault
-            ctx.fillStyle = "#111"; ctx.fillRect(0,0,300,300);
-            const drawSize = 300 * scale;
-            const x = 150 + (offsetX/100 * 300);
-            const y = 150 + (offsetY/100 * 300);
-            ctx.drawImage(imgPreview, x - drawSize/2, y - drawSize/2, drawSize, drawSize);
-            
-            const data = canvas.toDataURL("image/jpeg", 0.7);
-            client.photo = data; await new Promise(r => setTimeout(r, 800));
-            applyPhotoUI(data); saveVault(); renderVault();
-            document.getElementById('crop-overlay').style.display = 'none'; btn.innerText = "Set Profile";
+            const img = document.getElementById('crop-img');
+            ctx.fillStyle = "#111"; ctx.fillRect(0,0,400,400);
+            ctx.save(); ctx.translate(200 + ox, 200 + oy); ctx.scale(sc, sc);
+            const ratio = Math.max(400/img.naturalWidth, 400/img.naturalHeight);
+            ctx.drawImage(img, -img.naturalWidth*ratio/2, -img.naturalHeight*ratio/2, img.naturalWidth*ratio, img.naturalHeight*ratio);
+            ctx.restore();
+            client.photo = canvas.toDataURL("image/jpeg", 0.7);
+            applyUI(client.photo); save(); renderVault();
+            document.getElementById('crop-overlay').style.display = 'none'; hideSync();
         }
 
         async function book() {
             if(!client.date || !client.style || !client.time) return;
-            document.getElementById('loader').style.display = 'flex';
-            await fetch(URL, { method: "POST", mode: "no-cors", body: JSON.stringify(client) });
+            showSync("SECURING SLOT...");
+            await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(client) });
+            document.getElementById('reward-earned-text').innerText = client.style === 'Complex' ? '₱500 VOUCHER' : '₱100 VOUCHER';
             client.history.unshift({date: client.date, style: client.style, time: client.time});
-            saveVault(); document.getElementById('loader').style.display = 'none';
-            document.getElementById('confirm-overlay').style.display = 'flex';
+            save(); hideSync(); document.getElementById('pop-thanks').style.display = 'flex';
         }
 
-        function closeCropper() { document.getElementById('crop-overlay').style.display = 'none'; }
-        function closeConfirm() { document.getElementById('confirm-overlay').style.display = 'none'; transition('scr-booking', 'scr-profile'); }
-        function startReset() { resetTimer = setTimeout(() => { if(confirm("WIPE ALL?")) { localStorage.clear(); location.reload(); } }, 3000); }
-        function stopReset() { clearTimeout(resetTimer); }
-        function applyPhotoUI(data) { document.getElementById('p-avatar').src = data; document.getElementById('p-avatar').style.display='block'; document.getElementById('p-letter').style.display='none'; document.getElementById('nav-avatar').src = data; document.getElementById('nav-avatar').style.display='block'; document.getElementById('nav-letter').style.display='none'; }
-        function copyRef() { const el = document.createElement('textarea'); el.value = client.ref; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); document.getElementById('p-ref-code').innerText = "COPIED!"; setTimeout(() => document.getElementById('p-ref-code').innerText = client.ref, 2000); }
-        function logout() { localStorage.removeItem('active_user'); location.reload(); }
-        function deleteAccount() { if(confirm("Delete Profile?")) { delete userVault[client.name]; saveVault(); logout(); } }
-        function saveVault() { if(client.name) { userVault[client.name] = client; localStorage.setItem('illusive_vault', JSON.stringify(userVault)); } }
-        function setS(el, s) { document.querySelectorAll('.s-tile').forEach(t=>t.classList.remove('active')); el.classList.add('active'); client.style = s; populateDates(); }
-        function setT(el, t) { document.querySelectorAll('.t-tile').forEach(t=>t.c            const code = document.getElementById('my-ref').innerText;
-            const el = document.createElement('textarea'); el.value = code; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-            const t = document.getElementById('copy-toast'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000);
+        function updateHistory() { 
+            const vVault = document.getElementById('voucher-vault');
+            vVault.innerHTML = '';
+            const rewards = allBookings.filter(b => b.codeUsed === client.ref);
+            if(rewards.length === 0) { vVault.innerHTML = '<p style="font-size:8px; opacity:0.5;">No vouchers yet.</p>'; }
+            rewards.forEach(r => {
+                const item = document.createElement('div');
+                item.className = 'voucher-item';
+                item.innerHTML = `<div class="voucher-header"><strong>${r.style === 'Complex' ? '₱500' : '₱100'} OFF</strong><i class="fas fa-chevron-down"></i></div><div class="voucher-details">REFERRED: <strong>${r.name}</strong><br>STYLE: ${r.style}<br>DATE: ${r.date}</div>`;
+                item.onclick = () => item.classList.toggle('expanded');
+                vVault.appendChild(item);
+            });
+            document.getElementById('p-history').innerHTML = client.history.map(h => `<div style="padding:10px 0; border-bottom:1px solid #222;">${h.date} | ${h.style} @ ${h.time}</div>`).join(''); 
         }
 
-        function selectCat(el, val) {
-            document.querySelectorAll('.cat-tile').forEach(t => t.classList.remove('active'));
-            el.classList.add('active'); client.selectedCat = val; populateDates();
-        }
-
-        function populateDates() {
-            const scroller = document.getElementById('date-scroller'); scroller.innerHTML = '';
-            for(let i=0; i<365; i++) {
-                const d = new Date(); d.setDate(d.getDate() + i);
-                const dateStr = months[d.getMonth()] + " " + d.getDate();
-                const dayBookings = existingBookings.filter(b => b.date === dateStr);
-                const isFull = dayBookings.some(b => b.style === "Complex") || dayBookings.length >= 2;
-                const isQualityLimited = dayBookings.length > 0 && client.selectedCat === "Complex";
-                const tile = document.createElement('div');
-                tile.className = 'date-tile';
-                if (isFull || isQualityLimited) {
-                    tile.classList.add('waitlist-mode');
-                    tile.innerHTML = `<div style="font-size:10px; color:var(--gold);">${months[d.getMonth()]}</div><strong>${d.getDate()}</strong><div style="font-size:7px; color:var(--waitlist);">WAITLIST</div>`;
-                    tile.onclick = () => { document.querySelectorAll('.date-tile').forEach(t => t.classList.remove('active')); tile.classList.add('active'); setWait(true); };
-                } else {
-                    let s = client.selectedCat === 'Minimalist' ? (2 - dayBookings.length) : 1;
-                    tile.innerHTML = `<div style="font-size:10px; color:var(--gold);">${months[d.getMonth()]}</div><strong>${d.getDate()}</strong><div style="font-size:8px;">${s} slots</div>`;
-                    tile.onclick = () => { document.querySelectorAll('.date-tile').forEach(t => t.classList.remove('active')); tile.classList.add('active'); setWait(false); };
-                }
-                scroller.appendChild(tile);
-            }
-        }
-
-        function setWait(w) { client.isWaitlist = w; const b = document.getElementById('main-btn'); b.innerText = w ? "Join Waitlist" : "Book Session"; b.style.background = w ? "var(--waitlist)" : "var(--gold)"; }
-
-        async function handleConfirm() {
-            const active = document.querySelector('.date-tile.active');
-            if(!client.selectedCat || !active) return showPopup("REQUIRED", "Select Style and Date.");
-            const date = active.querySelector('div').innerText + " " + active.querySelector('strong').innerText;
-            if(client.isWaitlist) return showPopup("WAITLIST", "Waitlist joined.");
-            
-            const btn = document.getElementById('main-btn'); btn.innerText = "BOOKING..."; btn.style.opacity = "0.5";
-            try {
-                await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name: client.name, date: date, style: client.selectedCat }) });
-                existingBookings.push({ date: date, style: client.selectedCat });
-                client.bookings.unshift({ date: date, style: client.selectedCat });
-                showPopup("SUCCESS", "Booked! Syncing to your calendar...");
-                updateProfile(); populateDates();
-            } catch (e) { showPopup("ERROR", "Sync failed."); }
-            btn.innerText = "Book Session"; btn.style.opacity = "1";
-        }
-
-        function showPopup(t, m) { document.getElementById('alert-title').innerText = t; document.getElementById('alert-msg').innerText = m; document.getElementById('custom-alert').style.display = 'flex'; }
-        function closeAlert() { document.getElementById('custom-alert').style.display = 'none'; }
-        function toBooking() { 
-            client.name = document.getElementById('in-name').value;
-            if(!client.name) return;
-            const initial = client.name.charAt(0).toUpperCase();
-            document.getElementById('nav-initial').innerText = initial;
-            document.getElementById('avatar-text').innerText = initial;
-            document.getElementById('client-name').innerText = client.name;
-            document.getElementById('my-ref').innerText = "ILL-" + client.name.substring(0,3).toUpperCase() + "22";
-            populateDates(); transition('scr-landing', 'scr-booking'); 
-        }
-        function updateProfile() {
-            document.getElementById('apt-list').innerHTML = client.bookings.map(b => `<div style="padding:10px; border-bottom:1px solid #333;"><span style="color:var(--gold); font-weight:700;">${b.date}</span> - ${b.style} <span style="color:var(--success); font-size:9px; float:right;">SYNCED</span></div>`).join('');
-        }
-        function transition(f, t) { document.getElementById(f).style.opacity = '0'; setTimeout(() => { document.getElementById(f).classList.add('hidden'); document.getElementById(t).classList.remove('hidden'); setTimeout(() => document.getElementById(t).style.opacity = '1', 50); }, 500); }
-        function toProfile() { transition('scr-booking', 'scr-profile'); }
-        function backToBooking() { transition('scr-profile', 'scr-booking'); }
+        function save() { vault[client.name] = client; localStorage.setItem('illusive_vault', JSON.stringify(vault)); }
+        function applyUI(d) { document.getElementById('p-img').src = d; document.getElementById('p-img').style.display='block'; document.getElementById('nav-img').src = d; document.getElementById('nav-img').style.display='block'; }
+        function setStyles(el, s) { document.querySelectorAll('.s-tile').forEach(t=>t.classList.remove('selected')); el.classList.add('selected'); client.style = s; renderDates(); }
+        function setTimes(el, t) { document.querySelectorAll('.t-tile').forEach(t=>t.classList.remove('selected')); el.classList.add('selected'); client.time = t; }
+        function toProfile() { transition('scr-booking', 'scr-profile'); updateHistory(); }
+        function copyRef() { const el = document.createElement('textarea'); el.value = client.ref; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); const p = document.getElementById('p-ref-code'); const old = p.innerText; p.innerText = "COPIED!"; setTimeout(() => p.innerText = old, 2000); }
     </script>
 </body>
 </html>
