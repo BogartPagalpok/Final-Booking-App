@@ -3,202 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Illusive Studio v2.4.7 | Master Stable</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@300;400;800&display=swap" rel="stylesheet">
+    <title>Illusive Studio v3.2.3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=Plus+Jakarta+Sans:wght@400;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #d4af37; --bg: #050505; --glass: rgba(255, 255, 255, 0.05); --border: rgba(212, 175, 55, 0.3); --font-modegi: 'Cormorant Garamond', serif; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        :root {
+            --accent: #7c5cff;
+            --accent2: #a855f7;
+            --bg0: #070814;
+            --bg1: #0b0f2b;
+            --text: rgba(255,255,255,0.92);
+            --muted: rgba(255,255,255,0.65);
+            --glass: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.10);
+            --border2: rgba(124,92,255,0.45);
+            --font-serif: 'Cormorant Garamond', serif;
+            --red: #ff4d6d;
+            --green: #38f8b3;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; margin: 0; padding: 0; }
+        html, body {
+            background: radial-gradient(1200px 800px at 20% -10%, rgba(124,92,255,0.35), transparent 55%),
+                        radial-gradient(900px 700px at 110% 10%, rgba(168,85,247,0.25), transparent 55%),
+                        linear-gradient(180deg, var(--bg0), var(--bg1));
+            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: fixed;
+        }
         
-        /* HARD VERTICAL LOCK */
-        html, body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden; font-size: 18px; position: fixed; }
-        
-        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: flex-start; background: var(--bg); z-index: 100; padding: 20px; padding-top: 80px; }
-        .active-screen { display: flex !important; }
+        .header-ribbon { position: fixed; top: 0; left: 0; width: 100%; height: 78px; background: rgba(8,10,24,0.72); display: none; justify-content: space-between; align-items: center; padding: 0 18px; z-index: 99999; border-bottom: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(14px); }
+        .brand-block { cursor: pointer; pointer-events: auto; display: flex; flex-direction: column; }
+        .brand-text { font-family: var(--font-serif); font-weight: 900; font-size: 1.15rem; color: #e8e4ff; line-height: 1.1; text-transform: uppercase; }
+        .avatar-corner { width: 45px; height: 45px; border: 1px solid rgba(124,92,255,0.55); border-radius: 50%; overflow: hidden; background: rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; margin-left: auto; box-shadow: 0 14px 40px rgba(0,0,0,0.35); }
+        .avatar-corner img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* THE MASTER HEADER (BOOKING ONLY) */
-        .header-ribbon { position: fixed; top: 0; width: 100%; height: 85px; background: var(--gold); display: none; justify-content: space-between; align-items: center; padding: 0 25px; z-index: 500000; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .brand-main { font-family: var(--font-modegi); font-weight: 900; font-size: 24px; color: #000; letter-spacing: -1px; line-height: 1; }
-        .brand-sub { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 20px; color: #000; line-height: 1; }
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; background: transparent; z-index: 100; padding: 20px; overflow-y: auto; }
+        .active-screen { display: flex; }
 
-        .avatar-frame { width: 55px; height: 55px; border: 2px solid #000; border-radius: 50%; overflow: hidden; background: #111; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; cursor: pointer; }
-        .avatar-frame img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .glass-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.09); border-radius: 22px; padding: 22px 18px; width: 100%; max-width: 380px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 92px; position: relative; z-index: 500; pointer-events: auto; box-shadow: 0 18px 55px rgba(0,0,0,0.35); }
+        
+        .pop-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(25px); padding: 20px; pointer-events: auto; }
+        .pop-card { background: rgba(8,10,24,0.78); border: 1px solid rgba(124,92,255,0.55); border-radius: 26px; padding: 26px 20px; width: 100%; max-width: 350px; text-align: center; display: flex; flex-direction: column; align-items: center; pointer-events: auto; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
 
-        .glass-card { background: var(--glass); backdrop-filter: blur(40px); border: 1px solid var(--border); border-radius: 40px; padding: 30px 25px; width: 100%; max-width: 420px; text-align: center; display: flex; flex-direction: column; max-height: 75vh; }
-        
-        /* MEGA PROMO DESIGN */
-        .mega-promo { background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.05)); border: 2px solid var(--gold); padding: 30px 20px; border-radius: 30px; margin-bottom: 25px; animation: pulse-glow 3s infinite ease-in-out; }
-        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.2); } 50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); } }
-        
-        .scroller { display: flex; overflow-x: auto; gap: 15px; padding: 10px 5px; width: 100%; scrollbar-width: none; flex-shrink: 0; }
-        .tile { min-width: 105px; padding: 22px 10px; border: 1.5px solid var(--border); border-radius: 20px; background: rgba(0,0,0,0.5); cursor: pointer; flex-shrink: 0; position: relative; font-size: 14px; font-weight: 800; }
-        .tile.selected { background: var(--gold); color: #000; border-color: #fff; }
-        .tile.locked { opacity: 0.3; pointer-events: none; color: #ff4444; border-color: #ff4444; }
+        input { width: 100%; padding: 14px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.10); border-radius: 16px; color: white; text-align: center; margin-bottom: 12px; font-size: 16px; pointer-events: auto; }
+        .primary-btn { background: linear-gradient(90deg, var(--accent), var(--accent2)); color: #0b0f2b; border: none; padding: 14px 16px; width: 100%; border-radius: 16px; font-weight: 900; text-transform: uppercase; cursor: pointer; font-size: 13px; margin-top: 10px; display: flex; justify-content: center; align-items: center; pointer-events: auto; box-shadow: 0 18px 45px rgba(124,92,255,0.28); letter-spacing: 1px; }
 
-        .internal-scroll { flex-grow: 1; overflow-y: auto; scrollbar-width: none; margin: 15px 0; }
-        .primary-btn { background: var(--gold); color: #000; border: none; padding: 25px; width: 100%; border-radius: 30px; font-weight: 800; text-transform: uppercase; margin-top: 15px; letter-spacing: 2px; cursor: pointer; font-size: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        
-        input { width: 100%; padding: 22px; background: rgba(0,0,0,0.8); border: 2px solid var(--border); border-radius: 25px; color: white; text-align: center; margin-bottom: 20px; font-size: 18px; flex-shrink: 0; }
+        .scroller { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; width: 100%; scrollbar-width: none; flex-shrink: 0; pointer-events: auto; }
+        .tile { min-width: 92px; padding: 14px 6px; border: 1px solid rgba(255,255,255,0.10); border-radius: 16px; background: rgba(0,0,0,0.28); cursor: pointer; font-size: 12px; font-weight: 900; text-align: center; position: relative; flex-shrink: 0; pointer-events: auto; }
+        .tile.selected { background: rgba(124,92,255,0.22); color: #e8e4ff; border-color: rgba(124,92,255,0.65); box-shadow: 0 14px 40px rgba(124,92,255,0.18); }
+        .tile.holiday strong { color: var(--red); }
+        .tile.locked { opacity: 0.25; pointer-events: none; cursor: default; }
+
+        .promo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 20px; pointer-events: auto; }
+        .promo-card { background: transparent; border: 1px solid var(--gold); padding: 15px 10px; border-radius: 20px; text-align: center; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="booking-header" class="header-ribbon">
-        <div class="brand-block" onclick="document.getElementById('pop-bio').style.display='flex'">
-            <div class="brand-main">ILLUSIVE</div>
-            <div class="brand-sub">STUDIO</div>
+        <div class="brand-block" onclick="toggleBio(true)">
+            <div class="brand-text">ILLUSIVE</div>
+            <div class="brand-text">STUDIO</div>
         </div>
-        <div class="avatar-frame" onclick="toProfile()"><img id="nav-img" style="display:none;"><span id="nav-init" style="font-weight: 800; color:#000;">U</span></div>
+        <div class="avatar-corner" onclick="toProfile()"><img id="nav-img" style="display:none;" alt=""><span id="nav-init" style="font-weight: 800; color:#000;">U</span></div>
     </div>
 
-    <div id="pop-sync" class="popup-overlay"><div class="glass-card"><div style="border:5px solid var(--gold); border-top-color:transparent; width:60px; height:60px; border-radius:50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px;"></div><p id="sync-text" style="font-size: 14px; color: var(--gold); letter-spacing: 4px; font-weight: 800;">VERIFYING SLOT...</p></div></div>
+    <input type="file" id="file-upload" hidden accept="image/*" onchange="processUpload(this)">
 
-    <div id="pop-bio" class="popup-overlay" onclick="this.style.display='none'">
-        <div class="glass-card" onclick="event.stopPropagation()">
-            <div class="avatar-frame" style="width:130px; height:130px; margin: 0 auto 20px; border-color:var(--gold);">
-                <img id="admin-photo" style="display:none;"><span style="color:var(--gold); font-size: 2.5rem;">IL</span>
-            </div>
-            <h2 class="brand-main" style="color:var(--gold); border:none; margin-bottom:10px; font-size:38px;">IAN LESTER</h2>
-            <div style="font-size: 15px; color: #fff; font-weight: 600; margin-bottom: 5px;">Tattoo Artist • Photographer</div>
-            <div style="font-size: 15px; color: #aaa; margin-bottom: 30px;">Social Media Manager • Astronaut</div>
-            <div style="display:flex; justify-content:center; gap:40px;">
-                <a href="https://www.facebook.com/share/1CUUe8eweg/" target="_blank" style="color:var(--gold); font-size:35px;"><i class="fab fa-facebook"></i></a>
-                <a href="mailto:yhanlhester@gmail.com" style="color:var(--gold); font-size:35px;"><i class="fas fa-envelope"></i></a>
-            </div>
+    <div id="pop-promo" class="pop-overlay" onclick="this.style.display='none'">
+        <div class="pop-card" onclick="event.stopPropagation()">
+            <h2 id="promo-title" style="color:#e8e4ff; font-family:var(--font-serif); font-size: 1.8rem; margin-bottom: 15px;">MECHANICS</h2>
+            <div id="promo-body" style="font-size: 13px; line-height: 1.6; text-align: center; color: #ddd; margin-bottom: 20px;"></div>
+            <button class="primary-btn" onclick="document.getElementById('pop-promo').style.display='none'">UNDERSTOOD</button>
         </div>
     </div>
 
-    <section id="scr-landing" class="screen active-screen" style="padding-top: 50px;">
-        <h1 class="brand-main" style="font-size: 6.5rem; color:var(--gold); margin-bottom: 5px; line-height: 0.8;">ILLUSIVE</h1>
-        <div style="font-size: 14px; letter-spacing: 6px; color: #eee; font-weight: 300; margin-bottom: 45px; text-transform: uppercase;">Premium Online Booking</div>
+    <div id="pop-status" class="pop-overlay" onclick="this.style.display='none'">
+        <div class="pop-card" onclick="event.stopPropagation()">
+            <i id="status-icon" class="fas fa-check-circle" style="font-size: 50px; color: var(--accent); margin-bottom: 20px;"></i>
+            <h2 id="status-title" style="color:#e8e4ff; font-family:var(--font-serif); font-size: 1.8rem; margin-bottom: 10px;">SUCCESS</h2>
+            <p id="status-msg" style="font-size: 13px; line-height: 1.6; text-align: center; color: #ddd;"></p>
+            <button class="primary-btn" onclick="document.getElementById('pop-status').style.display='none'" style="margin-top:20px;">UNDERSTOOD</button>
+        </div>
+    </div>
 
+    <section id="scr-landing" class="screen active-screen">
+        <h1 style="font-size: 4rem; color: #e8e4ff; font-family: var(--font-serif); margin-top: 5vh; font-weight: 900; line-height: 0.8; text-align: center;">ILLUSIVE</h1>
+        <p style="font-size: 9px; letter-spacing: 5px; color: rgba(255,255,255,0.75); margin-bottom: 3vh; text-align: center; font-weight: 800;">PREMIUM ONLINE BOOKING</p>
         <div class="glass-card">
-            <div class="mega-promo">
-                <div style="font-size: 14px; font-weight: 800; letter-spacing: 2px; color: var(--gold); margin-bottom: 12px;">✨ 1ST APP BOOKING SPECIAL ✨</div>
-                <div style="font-size: 38px; font-weight: 900; color: #fff;">₱500 OFF</div>
-                <div style="font-size: 11px; font-weight: 600; color: #aaa; margin-top: 12px; letter-spacing: 1px;">REFER FRIENDS: ₱100-₱500 DISCOUNTS</div>
+            <div class="promo-grid">
+                <div class="promo-card" onclick="openPromo('first')"><p style="font-size:7px; color:var(--gold);">1ST BOOKING</p><p style="font-size:14px; font-weight:900;">₱500 OFF</p></div>
+                <div class="promo-card" onclick="openPromo('ref')"><p style="font-size:7px; color:var(--gold);">REFERRALS</p><p style="font-size:14px; font-weight:900;">UP TO ₱500</p></div>
             </div>
-            
-            <div id="vault-area" style="display:none; width: 100%;"><div class="scroller" id="vault-list" style="justify-content:center; margin-bottom: 20px;"></div></div>
+            <div id="vault-area" style="display:none; margin-bottom: 20px; width: 100%;">
+                <p style="font-size: 8px; font-weight: 800; color: var(--gold); margin-bottom: 10px; letter-spacing: 2px;">RECENT SESSIONS</p>
+                <div id="vault-list" class="scroller" style="justify-content:center;"></div>
+            </div>
             <input type="text" id="in-name" placeholder="FULL NAME">
-            <input type="text" id="in-ref-code" placeholder="REFERRAL CODE (OPTIONAL)">
+            <input type="text" id="in-referral" placeholder="REFERRAL CODE (OPTIONAL)">
             <button onclick="login()" class="primary-btn">ACCESS STUDIO</button>
         </div>
     </section>
 
-    <section id="scr-booking" class="screen">
+    <section id="scr-booking" class="screen" style="padding-top: 20px;">
         <div class="glass-card">
-            <p style="font-size: 11px; color: var(--gold); letter-spacing: 3px; font-weight: 800;">I. STYLE</p>
-            <div class="scroller" style="justify-content:center;"><div class="tile s-tile" onclick="setStyles(this, 'Minimalist')">MINIMAL</div><div class="tile s-tile" onclick="setStyles(this, 'Complex')">COMPLEX</div></div>
-            <p style="font-size: 11px; color: var(--gold); letter-spacing: 3px; margin-top: 15px; font-weight: 800;">II. DATE</p><div class="scroller" id="date-scroller"></div>
-            <p style="font-size: 11px; color: var(--gold); letter-spacing: 3px; margin-top: 15px; font-weight: 800;">III. TIME</p>
-            <div class="scroller" style="justify-content:center;"><div class="tile t-tile" onclick="setTimes(this, '10:00 AM')">10 AM</div><div class="tile t-tile" onclick="setTimes(this, '01:00 PM')">01 PM</div></div>
-            <button id="book-btn" onclick="book()" class="primary-btn"><span id="btn-text">SECURE SESSION</span><i id="btn-check" class="fas fa-check-circle" style="display:none;"></i></button>
+            <p style="color:var(--gold); font-weight:800; font-size:11px; margin-bottom:5px;">I. STYLE</p>
+            <div class="scroller" style="justify-content:center;">
+                <div class="tile s-tile" onclick="setStyles(this, 'Minimalist')">MINIMAL</div>
+                <div class="tile s-tile" onclick="setStyles(this, 'Complex')">COMPLEX</div>
+            </div>
+            <p style="color:var(--gold); font-weight:800; font-size:11px; margin:15px 0 5px;">II. DATE (90 DAYS)</p>
+            <div class="scroller" id="date-scroller"></div>
+            <p style="color:var(--gold); font-weight:800; font-size:11px; margin:15px 0 5px;">III. TIME</p>
+            <div class="scroller" style="justify-content:center;">
+                <div class="tile t-tile" onclick="setTimes(this, '10 AM')">10 AM</div>
+                <div class="tile t-tile" onclick="setTimes(this, '01 PM')">01 PM</div>
+            </div>
+            <button class="primary-btn" onclick="secureSession()">SECURE SESSION</button>
         </div>
     </section>
 
-    <section id="scr-profile" class="screen" style="padding-top: 30px; justify-content: center;">
-        <div class="glass-card">
-            <div style="flex-shrink:0;">
-                <div class="avatar-frame" style="width:115px; height:115px; margin: 0 auto 15px; border-color:var(--gold);" onclick="document.getElementById('file-in').click()"><img id="p-img" style="display:none;"><span style="font-size: 2.2rem; font-weight: 900; color:var(--gold);">U</span></div>
-                <input type="file" id="file-in" hidden accept="image/*" onchange="initCrop(this)">
-                <h2 id="p-name" class="brand-main" style="margin-bottom:5px; font-size: 2rem; color:var(--gold);">USER</h2>
-                <p id="p-ref-code" onclick="copyRef()" style="letter-spacing: 5px; font-weight: 800; color: var(--gold); font-size: 20px; cursor:pointer; margin-bottom: 15px;">ILL-XXXX</p>
+    <section id="scr-profile" class="screen">
+        <div class="glass-card" style="margin-top: 30px;">
+            <div class="avatar-corner" style="width:100px; height:100px; margin: 0 auto 15px; border-color:var(--gold); display:flex; align-items:center; justify-content:center;" onclick="document.getElementById('file-upload').click()">
+                <img id="p-img" style="display:none;" alt=""><span id="p-init" style="font-size: 2.5rem; font-weight: 900; color:var(--gold);">U</span>
             </div>
-            <p style="font-size: 10px; color: var(--gold); letter-spacing: 3px; font-weight: 800;">HISTORY & VOUCHERS</p>
-            <div id="p-history" class="internal-scroll" style="border-top:1px solid #222;"></div>
-            <div style="flex-shrink:0;"><button onclick="transition('scr-profile', 'scr-booking')" class="primary-btn" style="background:none; border:2.5px solid #444; color:#fff;">BACK</button><button onclick="location.reload()" style="background:none; color:#ff4444; border:none; margin-top:15px; font-size:12px; font-weight: 800; cursor:pointer;">LOGOUT</button></div>
+            <h2 id="p-name" style="color:var(--gold); font-family:var(--font-serif); font-size: 1.8rem; margin-bottom: 5px;">USER</h2>
+            <div id="p-ref-code" onclick="copyRef()" style="letter-spacing: 2px; font-weight: 800; color: var(--gold); font-size: 15px; margin-bottom: 15px; cursor:pointer; background:rgba(212,175,55,0.1); padding:8px; border-radius:12px; min-width: 150px;">ID: XXXX</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; text-align:left;">
+                <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:15px; border:1px solid rgba(255,255,255,0.05);"><p style="font-size:8px; color:var(--gold); font-weight:800;">STATUS</p><p style="font-size:11px; color:var(--green)">VERIFIED</p></div>
+                <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:15px; border:1px solid rgba(255,255,255,0.05);"><p style="font-size:8px; color:var(--gold); font-weight:800;">CREDITS</p><p style="font-size:11px;">₱500.00</p></div>
+            </div>
+            <button onclick="transition('scr-profile', 'scr-booking')" class="primary-btn" style="background:none; border:2px solid #333; color:#fff; margin-top:20px;">BACK</button>
         </div>
     </section>
+
+    <div id="pop-bio" class="pop-overlay" onclick="toggleBio(false)">
+        <div class="pop-card" onclick="event.stopPropagation()">
+            <h2 style="color:var(--gold); font-family:var(--font-serif); font-size: 2rem; margin-bottom: 5px;">IAN LESTER</h2>
+            <p style="font-size: 13px; color: #fff; font-weight: 600;">Tattoo Artist • Photographer</p>
+            <p style="font-size: 12px; color: #aaa; margin-bottom: 25px;">Social Media Manager • Astronaut</p>
+            <div style="display:flex; gap:40px; margin-bottom: 20px;"><a href="https://facebook.com/share/1CUUe8eweg/" target="_blank" style="color:var(--gold); font-size:32px;"><i class="fab fa-facebook"></i></a><a href="mailto:yhanlhester@gmail.com" style="color:var(--gold); font-size:32px;"><i class="fas fa-envelope"></i></a></div>
+            <button class="primary-btn" onclick="toggleBio(false)">CLOSE</button>
+        </div>
+    </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxCJKWSGwYMAyemsX78NdfnCQEuebVXLc-MEr9INjhonijZaWC7Yz2UfE-Blf0SOXc1/exec";
-        let vault = JSON.parse(localStorage.getItem('illusive_vault') || '{}');
-        let client = { name: '', photo: '', history: [], ref: '', usedRef: '' };
-        let allBookings = [];
+        const HOLIDAYS = ["JAN 1", "JAN 29", "FEB 25", "MAR 20", "APR 2", "APR 3", "APR 4", "APR 5", "APR 9", "MAY 1", "JUN 12", "AUG 21", "AUG 31", "NOV 1", "NOV 2", "NOV 30", "DEC 8", "DEC 25", "DEC 30", "DEC 31"];
+        // Booking backend (same endpoint your admin uses)
+        const API = "https://script.google.com/macros/s/AKfycbz_AJZgK7zbczP7-kwm7GDirtkVr7gUDmB65cAiALiMANYs97ubKMw6k_M8cTLvOXPy/exec";
+        // Optional: separate Calendar-only endpoint (leave as placeholder if unused)
+        const CAL_SYNC_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL_HERE";
+        let vault = safeParse('illusive_vault', {});
+        let client = { name: '', ref: '', photo: '', dateKey: '', isoDate: '', style: '', time: '' };
+        let remoteBookings = [];
 
-        window.onload = () => { renderVault(); };
-        async function transition(f, t) { 
-            if(t === 'scr-booking') { showSync("REFRESHING..."); await fetchAll(); hideSync(); }
-            document.getElementById(f).style.display = 'none'; document.getElementById(t).style.display = 'flex';
-            document.getElementById('booking-header').style.display = (t === 'scr-booking') ? 'flex' : 'none';
+        function safeParse(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                const val = raw ? JSON.parse(raw) : fallback;
+                return (val && typeof val === 'object' && !Array.isArray(val)) ? val : (typeof fallback === 'object' ? {} : fallback);
+            } catch (e) { return typeof fallback === 'object' ? {} : fallback; }
         }
 
-        function showSync(txt) { document.getElementById('sync-text').innerText = txt; document.getElementById('pop-sync').style.display = 'flex'; }
-        function hideSync() { document.getElementById('pop-sync').style.display = 'none'; }
+        window.onload = function () { renderVault(); };
 
-        function renderVault() {
-            const list = document.getElementById('vault-list'); const keys = Object.keys(vault);
-            if(keys.length > 0) { document.getElementById('vault-area').style.display = 'block'; list.innerHTML = keys.map(k => `<div style="margin: 0 10px; cursor: pointer;" onclick="quickLogin('${k}')"><div class="avatar-frame" style="border-color:var(--gold);">${vault[k].photo ? `<img src="${vault[k].photo}">` : `<span style="color:var(--gold); font-weight:900;">${k[0]}</span>`}</div></div>`).join(''); }
+        async function login(autoName = null) {
+            var nameEl = document.getElementById('in-name');
+            const n = (autoName != null ? String(autoName) : (nameEl ? nameEl.value : '') || '').trim();
+            if (!n) return;
+            const existing = vault[n];
+            client = (existing && typeof existing === 'object') ? { ...existing, name: n } : {
+                name: n, ref: 'ILL-' + (n.substring(0, 3) || 'XXX').toUpperCase() + Math.floor(100 + Math.random() * 900),
+                photo: '', dateKey: '', isoDate: '', style: '', time: ''
+            };
+            if (!client.ref) client.ref = 'ILL-' + (n.substring(0, 3) || 'XXX').toUpperCase() + Math.floor(100 + Math.random() * 900);
+            document.getElementById('p-name').innerText = client.name;
+            document.getElementById('p-ref-code').innerText = "ID: " + (client.ref || 'XXXX');
+            applyPic(client.photo || null);
+            await refreshRemoteBookings();
+            renderDates();
+            transition('scr-landing', 'scr-booking');
+            document.getElementById('booking-header').style.display = 'flex';
+            save();
         }
 
-        function quickLogin(name) { client = vault[name]; login(true); }
+        function openPromo(type) {
+            const m = {
+                first: { t: "1ST BOOKING", b: "New app users enjoy ₱500 OFF their first session.<br>Automatically applied upon booking verification." },
+                ref: { t: "REFERRALS", b: "Share your ID to friends.<br>Earn ₱100 for Minimalist & ₱500 for Complex bookings.<br>Credits stack in your profile vault." }
+            };
+            const promo = m[type] || m.first;
+            document.getElementById('promo-title').innerText = promo.t;
+            document.getElementById('promo-body').innerHTML = promo.b;
+            document.getElementById('pop-promo').style.display = 'flex';
+        }
 
-        async function login(auto = false) {
-            if(!auto) {
-                const n = document.getElementById('in-name').value.trim(); const r = document.getElementById('in-ref-code').value.trim();
-                if(!n) return;
-                client = vault[n] || { name: n, photo: '', history: [], ref: 'ILL-'+n.substring(0,3).toUpperCase()+Math.floor(100+Math.random()*899), usedRef: r || 'NONE' };
+        async function secureSession() {
+            if (!client.isoDate || !client.style || !client.time) {
+                showStatus("INCOMPLETE", "Please select style, date, and time.", "fa-exclamation-circle", "#ffaa00");
+                return;
             }
-            showSync("CONNECTING..."); save(); await fetchAll(); hideSync(); transition('scr-landing', 'scr-booking');
+            // Re-check availability against remote bookings (authoritative)
+            const counts = countByStyle(remoteBookings, client.isoDate);
+            const isFull = (counts.complex >= 1) || (counts.minimal >= 2);
+            const styleFull = (client.style === 'Complex' && counts.complex >= 1) || (client.style === 'Minimalist' && counts.minimal >= 2);
+            if (isFull || styleFull) {
+                showStatus("FULLY BOOKED", "Daily limit reached for this date.", "fa-calendar-times", "#ff4444");
+                return;
+            }
+
+            const entry = {
+                name: client.name,
+                date: client.isoDate,
+                style: client.style,
+                time: client.time,
+                referral: client.ref || ""
+            };
+
+            // Best-effort: write to backend (admin will see it)
+            try {
+                await fetch(API, { method: 'POST', mode: 'no-cors', body: JSON.stringify(entry) });
+            } catch (e) {
+                // If network fails, still let user proceed (but won't sync to admin)
+                console.error("Booking sync failed", e);
+            }
+
+            // Update local view immediately and refresh remote in background
+            remoteBookings.push(entry);
+            save();
+            renderDates();
+            syncCalendarEvent();
+
+            showStatus("THANK YOU", "Booked. See you soon.", "fa-check-circle", "#d4af37");
+            refreshRemoteBookings();
         }
 
-        async function fetchAll() { 
-            try { 
-                const r = await fetch(API_URL + "?v=" + new Date().getTime()); 
-                const data = await r.json(); allBookings = data.bookings; 
-                if(data.admin && data.admin.photo) {
-                    const admImg = document.getElementById('admin-photo');
-                    admImg.src = data.admin.photo; admImg.style.display = 'block';
-                }
-                renderDates(); updateHistory(); 
-            } catch(e){ renderDates(); } 
+        function showStatus(t, m, i, c) {
+            document.getElementById('status-title').innerText = t;
+            document.getElementById('status-title').style.color = c;
+            document.getElementById('status-msg').innerText = m;
+            document.getElementById('status-icon').className = `fas ${i}`;
+            document.getElementById('status-icon').style.color = c;
+            document.getElementById('pop-status').style.display = 'flex';
         }
 
         function renderDates() {
             const sc = document.getElementById('date-scroller'); sc.innerHTML = ''; let today = new Date();
-            for(let i=0; i<=90; i++){
-                let d = new Date(today); d.setDate(today.getDate() + i); const dKey = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][d.getMonth()] + " " + d.getDate();
-                const dayB = allBookings.filter(b => b.date === dKey); const mine = client.history.some(h => h.date === dKey);
-                let full = (client.style === 'Complex' && dayB.some(b => b.style === 'Complex')) || dayB.length >= 2 || mine;
-                const ti = document.createElement('div'); ti.className = `tile ${full ? 'locked' : ''}`;
-                ti.innerHTML = `${full ? `<span style="position:absolute;top:10px;width:100%;left:0;font-size:9px;font-weight:900;">${mine ? 'BOOKED' : 'FULL'}</span>` : ''}<strong>${d.getDate()}</strong><br>${["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][d.getMonth()]}`;
-                if(!full) ti.onclick = () => { document.querySelectorAll('#date-scroller .tile').forEach(t=>t.classList.remove('selected')); ti.classList.add('selected'); client.date = dKey; };
+            for(let i=1; i<=90; i++){
+                let d = new Date(today); d.setDate(today.getDate() + i);
+                const dKey = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][d.getMonth()] + " " + d.getDate();
+                const iso = toISODate(d);
+                const isHoliday = HOLIDAYS.includes(dKey);
+                
+                // Logic: Locked if Holiday OR remote capacity reached
+                const counts = countByStyle(remoteBookings, iso);
+                const isFull = (counts.complex >= 1 || counts.minimal >= 2);
+
+                const ti = document.createElement('div');
+                ti.className = `tile ${isHoliday ? 'holiday locked' : ''} ${isFull ? 'locked' : ''}`;
+                ti.innerHTML = `
+                    ${isHoliday ? '<span style="position:absolute;top:5px;width:100%;left:0;font-size:7px;color:var(--red);">CLOSED</span>' : ''}
+                    ${isFull && !isHoliday ? '<span style="position:absolute;top:5px;width:100%;left:0;font-size:7px;color:#aaa;">FULL</span>' : ''}
+                    <strong>${d.getDate()}</strong><br>${["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][d.getMonth()]}
+                `;
+                if (!isHoliday && !isFull) {
+                    ti.onclick = function () {
+                        document.querySelectorAll('#date-scroller .tile').forEach(function (t) { t.classList.remove('selected'); });
+                        ti.classList.add('selected');
+                        client.dateKey = dKey;
+                        client.isoDate = iso;
+                    };
+                    if (client.isoDate === iso) ti.classList.add('selected');
+                }
                 sc.appendChild(ti);
             }
         }
 
-        async function book() {
-            if(!client.date || !client.style || !client.time) return;
-            const btnText = document.getElementById('btn-text'); const btnCheck = document.getElementById('btn-check');
-            showSync("VERIFYING...");
-            const r = await fetch(API_URL + "?v=" + new Date().getTime()); const data = await r.json();
-            const conflict = data.bookings.filter(b => b.date === client.date);
-            if((client.style === 'Complex' && conflict.some(b => b.style === 'Complex')) || conflict.length >= 2) {
-                alert("Conflict: Slot taken!"); hideSync(); fetchAll(); return;
+        function applyPic(pic) {
+            const hasPic = pic && typeof pic === 'string' && pic.startsWith('data:');
+            const pImg = document.getElementById('p-img'), pInit = document.getElementById('p-init');
+            const nImg = document.getElementById('nav-img'), nInit = document.getElementById('nav-init');
+            if (hasPic) {
+                pImg.src = pic; pImg.style.display = 'block'; if (pInit) pInit.style.display = 'none';
+                nImg.src = pic; nImg.style.display = 'block'; if (nInit) nInit.style.display = 'none';
+            } else {
+                pImg.removeAttribute('src'); pImg.style.display = 'none'; if (pInit) pInit.style.display = '';
+                nImg.removeAttribute('src'); nImg.style.display = 'none'; if (nInit) nInit.style.display = '';
             }
-            btnText.innerText = "VERIFIED"; btnCheck.style.display = "inline-block";
-            await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(client) });
-            client.history.unshift({date: client.date, style: client.style, time: client.time});
-            save(); await fetchAll(); hideSync(); 
-            btnText.innerText = "SECURE SESSION"; btnCheck.style.display = "none";
-            transition('scr-booking', 'scr-profile');
+        }
+        function processUpload(input) {
+            const file = input && input.files && input.files[0];
+            if (!file || !file.type.startsWith('image/')) { input.value = ''; return; }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const result = e.target && e.target.result;
+                if (result) { client.photo = result; applyPic(client.photo); save(); renderVault(); }
+                input.value = '';
+            };
+            reader.onerror = function () { input.value = ''; };
+            reader.readAsDataURL(file);
+        }
+        function copyRef() {
+            const text = client.ref || '';
+            const done = function () {
+                const p = document.getElementById('p-ref-code'); if (!p) return;
+                const old = p.innerText; p.innerText = "COPIED!"; setTimeout(function () { p.innerText = old; }, 1500);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(function () {
+                    fallbackCopy(text, done);
+                });
+            } else { fallbackCopy(text, done); }
+        }
+        function fallbackCopy(text, done) {
+            const el = document.createElement('textarea'); el.value = text; el.style.position = 'fixed'; el.style.opacity = '0';
+            document.body.appendChild(el); el.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(el); if (done) done();
+        }
+        function transition(f, t) {
+            var screens = document.querySelectorAll('.screen');
+            for (var i = 0; i < screens.length; i++) {
+                screens[i].classList.remove('active-screen');
+                screens[i].style.display = 'none';
+            }
+
+            var to = document.getElementById(t);
+            if (to) {
+                to.classList.add('active-screen');
+                to.style.display = 'flex';
+            }
+
+            var hdr = document.getElementById('booking-header');
+            if (hdr) hdr.style.display = (t === 'scr-booking') ? 'flex' : 'none';
+        }
+        function save() {
+            if (!client || !client.name) return;
+            vault = vault || {};
+            vault[client.name] = {
+                name: client.name,
+                ref: client.ref || '',
+                photo: client.photo || '',
+                dateKey: client.dateKey || '',
+                isoDate: client.isoDate || '',
+                style: client.style || '',
+                time: client.time || ''
+            };
+            try { localStorage.setItem('illusive_vault', JSON.stringify(vault)); } catch (e) {}
+        }
+        function toggleBio(v) { document.getElementById('pop-bio').style.display = v ? 'flex' : 'none'; }
+        function toProfile() { transition('scr-booking', 'scr-profile'); }
+        function setStyles(el, s) { 
+            document.querySelectorAll('.s-tile').forEach(t=>t.classList.remove('selected')); 
+            el.classList.add('selected'); client.style = s;
+        }
+        function setTimes(el, t) {
+            document.querySelectorAll('.t-tile').forEach(function (tile) { tile.classList.remove('selected'); });
+            el.classList.add('selected');
+            client.time = t;
+        }
+        async function syncCalendarEvent() {
+            if (!CAL_SYNC_URL || CAL_SYNC_URL.indexOf("YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL_HERE") === 0) {
+                // Not configured yet; skip remote sync but keep local booking
+                return;
+            }
+            try {
+                const payload = {
+                    name: client.name,
+                    style: client.style,
+                    dateKey: client.date,  // e.g. "JAN 15"
+                    time: client.time,     // e.g. "10 AM" or "01 PM"
+                    ref: client.ref || ""
+                };
+                await fetch(CAL_SYNC_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                // Calendar sync failed; keep local success and log to console
+                console.error("Calendar sync failed", e);
+            }
         }
 
-        function applyUI(d) { document.getElementById('p-img').src = d; document.getElementById('p-img').style.display='block'; document.getElementById('nav-img').src = d; document.getElementById('nav-img').style.display='block'; }
-        function save() { vault[client.name] = client; localStorage.setItem('illusive_vault', JSON.stringify(vault)); }
-        function updateHistory() { 
-            const hist = document.getElementById('p-history');
-            const rewards = allBookings.filter(b => b.codeUsed === client.ref);
-            let html = rewards.map(r => `<div class="v-item" style="border:1px solid var(--gold); border-radius:15px; background:rgba(212,175,55,0.1); padding:15px; margin-bottom:10px; text-align:left;"><span style="color:var(--gold); font-weight:800;">₱${r.style==='Complex'?'500':'100'} DISCOUNT</span><br><span style="font-size:10px;">REFERRAL: ${r.name}</span></div>`).join('');
-            html += client.history.map(h => `<div style="padding:15px; border-bottom:1px solid #111; font-size:14px; opacity:0.8; text-align:left;">${h.date} | ${h.style} @ ${h.time}</div>`).join('');
-            hist.innerHTML = html || '<p style="font-size:12px; opacity:0.3; margin-top:25px;">NO DATA</p>';
+        function toISODate(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
         }
-        function initCrop(input) { if(input.files[0]) { const r = new FileReader(); r.onload = e => { client.photo = e.target.result; applyUI(client.photo); save(); renderVault(); }; r.readAsDataURL(input.files[0]); } }
-        function setStyles(el, s) { document.querySelectorAll('.s-tile').forEach(t=>t.classList.remove('selected')); el.classList.add('selected'); client.style = s; renderDates(); }
-        function setTimes(el, t) { document.querySelectorAll('.t-tile').forEach(t=>t.classList.remove('selected')); el.classList.add('selected'); client.time = t; }
-        function toProfile() { transition('scr-booking', 'scr-profile'); updateHistory(); }
-        function copyRef() { const el = document.createElement('textarea'); el.value = client.ref; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); const p = document.getElementById('p-ref-code'); const old = p.innerText; p.innerText = "COPIED!"; setTimeout(() => p.innerText = old, 2000); }
+
+        function normalizeISO(dateStr) {
+            return String(dateStr || '').split('T')[0];
+        }
+
+        function countByStyle(bookings, isoDate) {
+            const out = { minimal: 0, complex: 0 };
+            for (const b of (bookings || [])) {
+                const d = normalizeISO(b && b.date);
+                if (d !== isoDate) continue;
+                const s = String(b.style || '').toLowerCase();
+                if (s.includes('complex')) out.complex++;
+                if (s.includes('minimal')) out.minimal++;
+            }
+            return out;
+        }
+
+        async function refreshRemoteBookings() {
+            try {
+                const res = await fetch(API, { cache: 'no-store' });
+                const data = await res.json();
+                remoteBookings = Array.isArray(data) ? data : [];
+                renderDates();
+            } catch (e) {
+                // Keep whatever we have locally
+            }
+        }
+        function renderVault() {
+            const list = document.getElementById('vault-list');
+            const area = document.getElementById('vault-area');
+            if (!list || !area) return;
+            const keys = Object.keys(vault || {}).filter(function (k) { return vault[k] && typeof vault[k] === 'object'; });
+            list.innerHTML = '';
+            if (keys.length > 0) {
+                area.style.display = 'block';
+                keys.forEach(function (k) {
+                    var c = vault[k];
+                    var div = document.createElement('div');
+                    div.className = 'avatar-corner';
+                    div.style.cssText = 'width:55px;height:55px;border-color:var(--gold);margin:0 5px;cursor:pointer;';
+                    div.onclick = function () { login(k); };
+                    if (c.photo && typeof c.photo === 'string' && c.photo.startsWith('data:')) {
+                        var img = document.createElement('img');
+                        img.src = c.photo;
+                        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+                        div.appendChild(img);
+                    } else {
+                        var inner = document.createElement('div');
+                        inner.style.cssText = 'width:100%;height:100%;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:800;';
+                        inner.textContent = k.charAt(0) || '?';
+                        div.appendChild(inner);
+                    }
+                    list.appendChild(div);
+                });
+            } else {
+                area.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
